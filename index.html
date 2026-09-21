@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090909">
+  <meta name="description" content="¿Quién va a dropear esta semana? La ruleta oficial de NO GNOMO.">
+  <title>NO GNOMO — Weekly Dropper</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="container">
+    <header class="brand">
+      <img src="assets/no-gnomo-logo.png" alt="Logo de NO GNOMO: un gnomo tras una señal de prohibido" width="124" height="124">
+      <div class="guild-name">NO GNOMO</div>
+      <div class="subtitle">WORLD OF WARCRAFT: FOREVER</div>
+    </header>
+
+    <h1>¿QUIÉN VA A<br><span>DROPEAR</span> ESTA SEMANA?</h1>
+
+    <section class="machine" id="machine" aria-label="Ruleta de jugadores">
+      <div class="machine-rivets" aria-hidden="true"></div>
+      <div class="screen">
+        <div id="name" aria-live="off">CARGANDO…</div>
+      </div>
+    </section>
+
+    <div class="controls">
+      <button id="spinButton" type="button" disabled>
+        <span aria-hidden="true">🎰</span> DROPEAR
+      </button>
+    </div>
+
+    <section id="result" aria-live="polite"></section>
+
+    <p class="stats"><strong id="playerCount">153</strong> héroes entraron. No todos llegarán al nivel máximo.</p>
+  </main>
+
+  <div id="confettiLayer" aria-hidden="true"></div>
+  <noscript>Necesitas activar JavaScript para usar la ruleta.</noscript>
+  <script src="app.js" defer></script>
+</body>
+</html>
