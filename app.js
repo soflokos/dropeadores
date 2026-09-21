@@ -3,6 +3,39 @@
 const HISTORY_KEY = "no-gnomo-hall-of-shame-v1";
 const SOUND_KEY = "no-gnomo-roulette-sound-v1";
 
+const raidConfigs = {
+  10: { tanks: [2], healers: [2, 3] },
+  20: { tanks: [2, 3], healers: [4] },
+  40: { tanks: [3, 4], healers: [8] }
+};
+
+const classBySpec = {
+  Affliction: "Warlock",
+  Destruction: "Warlock",
+  Assassination: "Rogue",
+  Combat: "Rogue",
+  Balance: "Druid",
+  Feral: "Druid",
+  Guardian: "Druid",
+  Restoration: "Druid",
+  Beastmastery: "Hunter",
+  Survival: "Hunter",
+  Discipline: "Priest",
+  Shadow: "Priest",
+  Holy1: "Paladin",
+  Retribution: "Paladin",
+  Protection1: "Paladin",
+  Elemental: "Shaman",
+  Enhancement: "Shaman",
+  Restoration1: "Shaman",
+  Fire: "Mage",
+  Fury: "Warrior",
+  Protection: "Warrior"
+};
+
+const tankSpecs = new Set(["Guardian", "Protection", "Protection1"]);
+const healerSpecs = new Set(["Discipline", "Holy1", "Restoration", "Restoration1"]);
+
 const reasons = [
   "lleva 4 días diciendo «mañana entro».",
   "ha decidido tocar césped.",
@@ -33,6 +66,17 @@ const ui = {
   hallList: document.querySelector("#hallList"),
   hallEmpty: document.querySelector("#hallEmpty"),
   survivorsList: document.querySelector("#survivorsList"),
+  openRaidComp: document.querySelector("#openRaidComp"),
+  closeRaidComp: document.querySelector("#closeRaidComp"),
+  raidCompSheet: document.querySelector("#raidCompSheet"),
+  raidSheetBackdrop: document.querySelector("#raidSheetBackdrop"),
+  raidSizeButtons: [...document.querySelectorAll("[data-raid-size]")],
+  generateRaidButton: document.querySelector("#generateRaidButton"),
+  raidSizeSummary: document.querySelector("#raidSizeSummary"),
+  raidRoleSummary: document.querySelector("#raidRoleSummary"),
+  raidGroupSummary: document.querySelector("#raidGroupSummary"),
+  raidGroups: document.querySelector("#raidGroups"),
+  raidCompMessage: document.querySelector("#raidCompMessage"),
   musicToggle: document.querySelector("#musicToggle"),
   musicLabel: document.querySelector("#musicLabel"),
   resetDialog: document.querySelector("#resetDialog"),
@@ -46,6 +90,7 @@ let history = loadHistory();
 let spinning = false;
 let soundEnabled = localStorage.getItem(SOUND_KEY) !== "off";
 let audioContext = null;
+let raidSize = 40;
 
 init();
 
@@ -80,6 +125,14 @@ function bindEvents() {
   ui.resetButton.addEventListener("click", () => ui.resetDialog.showModal());
   ui.confirmReset.addEventListener("click", resetSeason);
   ui.musicToggle.addEventListener("click", toggleSound);
+  ui.openRaidComp.addEventListener("click", openRaidComp);
+  ui.closeRaidComp.addEventListener("click", closeRaidComp);
+  ui.raidSheetBackdrop.addEventListener("click", closeRaidComp);
+  ui.generateRaidButton.addEventListener("click", generateRaidComp);
+  ui.raidSizeButtons.forEach(button => button.addEventListener("click", () => selectRaidSize(Number(button.dataset.raidSize))));
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !ui.raidCompSheet.hidden) closeRaidComp();
+  });
 }
 
 function loadHistory() {
@@ -108,6 +161,16 @@ function findPlayer(name) {
   return players.find(player => player.name === name) || { name, category: "Sin rol", spec: "Sin especialización" };
 }
 
+function roleFor(player) {
+  if (player.category === "Tank" || tankSpecs.has(player.spec)) return "tank";
+  if (player.category === "Healer" || healerSpecs.has(player.spec)) return "healer";
+  return "dps";
+}
+
+function classFor(player) {
+  return classBySpec[player.spec] || "Warrior";
+}
+
 function randomIndex(length) {
   if (length <= 1) return 0;
   const value = new Uint32Array(1);
@@ -119,6 +182,15 @@ function pick(list, excludedName = null) {
   const available = excludedName === null ? list : list.filter(player => player.name !== excludedName);
   const pool = available.length ? available : list;
   return pool[randomIndex(pool.length)];
+}
+
+function shuffled(list) {
+  const copy = [...list];
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const swapIndex = randomIndex(index + 1);
+    [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+  }
+  return copy;
 }
 
 function setReel(player) {
@@ -182,6 +254,7 @@ async function spin() {
   };
   history.push(entry);
   saveHistory();
+  clearRaidComp();
   showResult(entry);
   launchConfetti();
   spinning = false;
@@ -198,6 +271,7 @@ function undoLast() {
   if (spinning || !history.length) return;
   const restored = history.pop();
   saveHistory();
+  clearRaidComp();
   ui.result.hidden = true;
   ui.machine.classList.remove("winner");
   setReel(findPlayer(restored.name));
@@ -208,6 +282,7 @@ function undoLast() {
 function resetSeason() {
   history = [];
   saveHistory();
+  clearRaidComp();
   ui.result.hidden = true;
   ui.machine.classList.remove("winner", "spinning");
   if (players.length) setReel(players[0]);
@@ -225,6 +300,151 @@ function render() {
   ui.resetButton.disabled = spinning || history.length === 0;
   renderHall();
   renderSurvivors(survivors);
+}
+
+function openRaidComp() {
+  ui.raidCompSheet.hidden = false;
+  document.body.classList.add("raid-sheet-open");
+  window.requestAnimationFrame(() => ui.raidCompSheet.classList.add("open"));
+  generateRaidComp();
+  ui.closeRaidComp.focus();
+}
+
+function closeRaidComp() {
+  ui.raidCompSheet.classList.remove("open");
+  document.body.classList.remove("raid-sheet-open");
+  window.setTimeout(() => {
+    ui.raidCompSheet.hidden = true;
+    ui.openRaidComp.focus();
+  }, 240);
+}
+
+function selectRaidSize(size) {
+  if (!raidConfigs[size]) return;
+  raidSize = size;
+  ui.raidSizeButtons.forEach(button => {
+    const selected = Number(button.dataset.raidSize) === size;
+    button.classList.toggle("active", selected);
+    button.setAttribute("aria-pressed", String(selected));
+  });
+  generateRaidComp();
+}
+
+function generateRaidComp() {
+  const survivors = getSurvivors();
+  const config = raidConfigs[raidSize];
+  const pools = {
+    tank: survivors.filter(player => roleFor(player) === "tank"),
+    healer: survivors.filter(player => roleFor(player) === "healer"),
+    dps: survivors.filter(player => roleFor(player) === "dps")
+  };
+
+  ui.raidSizeSummary.textContent = `RAID ${raidSize}`;
+  ui.raidGroupSummary.textContent = `${raidSize / 5} grupos`;
+  ui.generateRaidButton.disabled = survivors.length < raidSize;
+
+  if (survivors.length < raidSize) {
+    showRaidCompError(`Solo quedan ${survivors.length} supervivientes para una raid de ${raidSize}.`);
+    return;
+  }
+
+  const possibleTankCounts = config.tanks.filter(count => count <= pools.tank.length);
+  const possibleHealerCounts = config.healers.filter(count => count <= pools.healer.length);
+  if (!possibleTankCounts.length || !possibleHealerCounts.length) {
+    showRaidCompError("No quedan suficientes tanks o heals para generar esta composición.");
+    return;
+  }
+
+  const tankCount = possibleTankCounts[randomIndex(possibleTankCounts.length)];
+  const healerCount = possibleHealerCounts[randomIndex(possibleHealerCounts.length)];
+  const dpsCount = raidSize - tankCount - healerCount;
+  if (pools.dps.length < dpsCount) {
+    showRaidCompError(`No quedan ${dpsCount} DPS disponibles.`);
+    return;
+  }
+
+  const groups = Array.from({ length: raidSize / 5 }, () => []);
+  distributeAcrossGroups(shuffled(pools.tank).slice(0, tankCount), groups);
+  distributeAcrossGroups(shuffled(pools.healer).slice(0, healerCount), groups);
+
+  const dps = shuffled(pools.dps).slice(0, dpsCount);
+  let dpsIndex = 0;
+  while (dpsIndex < dps.length) {
+    for (const group of groups) {
+      if (group.length < 5 && dpsIndex < dps.length) {
+        group.push(dps[dpsIndex]);
+        dpsIndex += 1;
+      }
+    }
+  }
+
+  groups.forEach(group => group.sort((a, b) => roleOrder(roleFor(a)) - roleOrder(roleFor(b))));
+  renderRaidGroups(groups);
+  ui.raidRoleSummary.textContent = `${tankCount} tanks · ${healerCount} heals · ${dpsCount} DPS`;
+  ui.raidCompMessage.hidden = true;
+  ui.raidGroups.hidden = false;
+}
+
+function distributeAcrossGroups(members, groups) {
+  members.forEach((member, index) => groups[index % groups.length].push(member));
+}
+
+function roleOrder(role) {
+  return role === "tank" ? 0 : role === "healer" ? 1 : 2;
+}
+
+function roleLabel(role) {
+  return role === "tank" ? "T" : role === "healer" ? "H" : "D";
+}
+
+function renderRaidGroups(groups) {
+  ui.raidGroups.replaceChildren();
+  groups.forEach((members, groupIndex) => {
+    const group = document.createElement("section");
+    group.className = "raid-group";
+    const title = document.createElement("h3");
+    title.textContent = `GRUPO ${groupIndex + 1}`;
+    const list = document.createElement("ul");
+    list.className = "raid-group-list";
+
+    members.forEach(player => {
+      const item = document.createElement("li");
+      item.className = "raid-member";
+      const wowClass = classFor(player);
+      item.dataset.wowClass = wowClass;
+      item.title = `${wowClass} · ${player.spec}`;
+
+      const name = document.createElement("strong");
+      name.className = "raid-member-name";
+      name.textContent = player.name;
+      const role = document.createElement("span");
+      role.className = "raid-member-role";
+      role.textContent = roleLabel(roleFor(player));
+      const meta = document.createElement("span");
+      meta.className = "raid-member-meta";
+      meta.textContent = `${wowClass} · ${player.spec}`;
+      item.append(name, role, meta);
+      list.append(item);
+    });
+
+    group.append(title, list);
+    ui.raidGroups.append(group);
+  });
+}
+
+function showRaidCompError(message) {
+  ui.raidGroups.hidden = true;
+  ui.raidCompMessage.textContent = message;
+  ui.raidCompMessage.hidden = false;
+  ui.raidRoleSummary.textContent = "Composición no disponible";
+}
+
+function clearRaidComp() {
+  ui.raidGroups.replaceChildren();
+  ui.raidGroups.hidden = true;
+  ui.raidCompMessage.textContent = "El roster ha cambiado. Pulsa «Generar composición» para actualizarlo.";
+  ui.raidCompMessage.hidden = false;
+  ui.raidRoleSummary.textContent = "Pendiente de regenerar";
 }
 
 function renderHall() {

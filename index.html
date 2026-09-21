@@ -12,10 +12,16 @@
 <body>
   <div class="page-shell">
     <header class="hero">
-      <button class="music-toggle" id="musicToggle" type="button" aria-pressed="true" aria-label="Desactivar sonido de ruleta">
-        <span aria-hidden="true">🔊</span>
-        <span id="musicLabel">SONIDO ON</span>
-      </button>
+      <div class="top-tools">
+        <button class="raid-comp-toggle" id="openRaidComp" type="button" aria-haspopup="dialog" aria-controls="raidCompSheet">
+          <span aria-hidden="true">⚔</span>
+          <span>RAID COMP</span>
+        </button>
+        <button class="music-toggle" id="musicToggle" type="button" aria-pressed="true" aria-label="Desactivar sonido de ruleta">
+          <span aria-hidden="true">🔊</span>
+          <span id="musicLabel">SONIDO ON</span>
+        </button>
+      </div>
 
       <img class="brand-logo" src="assets/no-gnomo-logo.png" alt="NO GNOMO" width="92" height="92">
       <p class="kicker">WORLD OF WARCRAFT: FOREVER</p>
@@ -77,6 +83,54 @@
     </main>
 
     <footer>NO GNOMO · dato científico no revisado por pares · el historial se guarda en este navegador</footer>
+  </div>
+
+  <div class="raid-sheet-shell" id="raidCompSheet" hidden>
+    <button class="raid-sheet-backdrop" id="raidSheetBackdrop" type="button" aria-label="Cerrar Raid Comp Generator"></button>
+    <aside class="raid-sheet" role="dialog" aria-modal="true" aria-labelledby="raidSheetTitle">
+      <header class="raid-sheet-header">
+        <div>
+          <p>NO GNOMO TOOLS</p>
+          <h2 id="raidSheetTitle">Raid Comp Generator</h2>
+          <span>Grupos clásicos de 5 usando los supervivientes de la temporada.</span>
+        </div>
+        <button class="raid-sheet-close" id="closeRaidComp" type="button" aria-label="Cerrar panel">×</button>
+      </header>
+
+      <div class="raid-sheet-controls">
+        <div class="raid-size-picker" role="group" aria-label="Tamaño de la raid">
+          <button class="raid-size-button" type="button" data-raid-size="10" aria-pressed="false">10</button>
+          <button class="raid-size-button" type="button" data-raid-size="20" aria-pressed="false">20</button>
+          <button class="raid-size-button active" type="button" data-raid-size="40" aria-pressed="true">40</button>
+        </div>
+        <button class="raid-generate-button" id="generateRaidButton" type="button">
+          <span aria-hidden="true">↻</span> GENERAR COMPOSICIÓN
+        </button>
+      </div>
+
+      <div class="raid-sheet-status" id="raidSheetStatus" aria-live="polite">
+        <strong id="raidSizeSummary">RAID 40</strong>
+        <span aria-hidden="true">•</span>
+        <span id="raidRoleSummary">Preparando el roster…</span>
+        <span aria-hidden="true">•</span>
+        <span id="raidGroupSummary">8 grupos</span>
+      </div>
+
+      <div class="raid-groups" id="raidGroups"></div>
+      <div class="raid-comp-message" id="raidCompMessage" hidden></div>
+
+      <div class="class-legend" aria-label="Colores oficiales de clase">
+        <span data-wow-class="Warrior"><i></i>Warrior</span>
+        <span data-wow-class="Paladin"><i></i>Paladin</span>
+        <span data-wow-class="Hunter"><i></i>Hunter</span>
+        <span data-wow-class="Rogue"><i></i>Rogue</span>
+        <span data-wow-class="Priest"><i></i>Priest</span>
+        <span data-wow-class="Shaman"><i></i>Shaman</span>
+        <span data-wow-class="Mage"><i></i>Mage</span>
+        <span data-wow-class="Warlock"><i></i>Warlock</span>
+        <span data-wow-class="Druid"><i></i>Druid</span>
+      </div>
+    </aside>
   </div>
 
   <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
