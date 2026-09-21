@@ -3,6 +3,15 @@
 const HISTORY_KEY = "no-gnomo-hall-of-shame-v1";
 const SOUND_KEY = "no-gnomo-roulette-sound-v1";
 
+const raidConfigs = {
+  10: { tanks: [2], healers: [2, 3] },
+  20: { tanks: [2, 3], healers: [4] },
+  40: { tanks: [3, 4], healers: [8] }
+};
+
+const tankSpecs = new Set(["Guardian", "Protection", "Protection1"]);
+const healerSpecs = new Set(["Discipline", "Holy1", "Restoration", "Restoration1"]);
+
 const reasons = [
   "lleva 4 días diciendo «mañana entro».",
   "ha decidido tocar césped.",
@@ -33,6 +42,16 @@ const ui = {
   hallList: document.querySelector("#hallList"),
   hallEmpty: document.querySelector("#hallEmpty"),
   survivorsList: document.querySelector("#survivorsList"),
+  raidSizeButtons: [...document.querySelectorAll("[data-raid-size]")],
+  generateRaidButton: document.querySelector("#generateRaidButton"),
+  raidSummary: document.querySelector("#raidSummary"),
+  raidComposition: document.querySelector("#raidComposition"),
+  tankList: document.querySelector("#tankList"),
+  healerList: document.querySelector("#healerList"),
+  dpsList: document.querySelector("#dpsList"),
+  tankCount: document.querySelector("#tankCount"),
+  healerCount: document.querySelector("#healerCount"),
+  dpsCount: document.querySelector("#dpsCount"),
   musicToggle: document.querySelector("#musicToggle"),
   musicLabel: document.querySelector("#musicLabel"),
   resetDialog: document.querySelector("#resetDialog"),
@@ -46,6 +65,7 @@ let history = loadHistory();
 let spinning = false;
 let soundEnabled = localStorage.getItem(SOUND_KEY) !== "off";
 let audioContext = null;
+let raidSize = 10;
 
 init();
 
@@ -80,6 +100,8 @@ function bindEvents() {
   ui.resetButton.addEventListener("click", () => ui.resetDialog.showModal());
   ui.confirmReset.addEventListener("click", resetSeason);
   ui.musicToggle.addEventListener("click", toggleSound);
+  ui.generateRaidButton.addEventListener("click", generateRaid);
+  ui.raidSizeButtons.forEach(button => button.addEventListener("click", () => selectRaidSize(Number(button.dataset.raidSize))));
 }
 
 function loadHistory() {
@@ -108,6 +130,12 @@ function findPlayer(name) {
   return players.find(player => player.name === name) || { name, category: "Sin rol", spec: "Sin especialización" };
 }
 
+function roleFor(player) {
+  if (player.category === "Tank" || tankSpecs.has(player.spec)) return "tank";
+  if (player.category === "Healer" || healerSpecs.has(player.spec)) return "healer";
+  return "dps";
+}
+
 function randomIndex(length) {
   if (length <= 1) return 0;
   const value = new Uint32Array(1);
@@ -119,6 +147,15 @@ function pick(list, excludedName = null) {
   const available = excludedName === null ? list : list.filter(player => player.name !== excludedName);
   const pool = available.length ? available : list;
   return pool[randomIndex(pool.length)];
+}
+
+function shuffled(list) {
+  const copy = [...list];
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const swapIndex = randomIndex(index + 1);
+    [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+  }
+  return copy;
 }
 
 function setReel(player) {
@@ -182,6 +219,7 @@ async function spin() {
   };
   history.push(entry);
   saveHistory();
+  clearRaid();
   showResult(entry);
   launchConfetti();
   spinning = false;
@@ -198,6 +236,7 @@ function undoLast() {
   if (spinning || !history.length) return;
   const restored = history.pop();
   saveHistory();
+  clearRaid();
   ui.result.hidden = true;
   ui.machine.classList.remove("winner");
   setReel(findPlayer(restored.name));
@@ -208,6 +247,7 @@ function undoLast() {
 function resetSeason() {
   history = [];
   saveHistory();
+  clearRaid();
   ui.result.hidden = true;
   ui.machine.classList.remove("winner", "spinning");
   if (players.length) setReel(players[0]);
@@ -223,8 +263,86 @@ function render() {
   ui.spinButton.disabled = spinning || survivors.length === 0;
   ui.undoButton.disabled = spinning || history.length === 0;
   ui.resetButton.disabled = spinning || history.length === 0;
+  ui.generateRaidButton.disabled = spinning || survivors.length < raidSize;
   renderHall();
   renderSurvivors(survivors);
+}
+
+function selectRaidSize(size) {
+  if (!raidConfigs[size]) return;
+  raidSize = size;
+  ui.raidSizeButtons.forEach(button => {
+    const selected = Number(button.dataset.raidSize) === size;
+    button.classList.toggle("active", selected);
+    button.setAttribute("aria-pressed", String(selected));
+  });
+  clearRaid();
+  render();
+}
+
+function generateRaid() {
+  const survivors = getSurvivors();
+  if (survivors.length < raidSize) {
+    showToast(`Faltan jugadores: quedan ${survivors.length} supervivientes`);
+    return;
+  }
+
+  const config = raidConfigs[raidSize];
+  const pools = {
+    tank: survivors.filter(player => roleFor(player) === "tank"),
+    healer: survivors.filter(player => roleFor(player) === "healer"),
+    dps: survivors.filter(player => roleFor(player) === "dps")
+  };
+
+  const possibleTankCounts = config.tanks.filter(count => count <= pools.tank.length);
+  const possibleHealerCounts = config.healers.filter(count => count <= pools.healer.length);
+  if (!possibleTankCounts.length || !possibleHealerCounts.length) {
+    showToast("No quedan suficientes tanks o heals para esa raid");
+    return;
+  }
+
+  const tankCount = possibleTankCounts[randomIndex(possibleTankCounts.length)];
+  const healerCount = possibleHealerCounts[randomIndex(possibleHealerCounts.length)];
+  const dpsCount = raidSize - tankCount - healerCount;
+  if (pools.dps.length < dpsCount) {
+    showToast(`No quedan ${dpsCount} DPS disponibles`);
+    return;
+  }
+
+  const composition = {
+    tanks: shuffled(pools.tank).slice(0, tankCount),
+    healers: shuffled(pools.healer).slice(0, healerCount),
+    dps: shuffled(pools.dps).slice(0, dpsCount)
+  };
+
+  renderRaidRole(ui.tankList, composition.tanks);
+  renderRaidRole(ui.healerList, composition.healers);
+  renderRaidRole(ui.dpsList, composition.dps);
+  ui.tankCount.textContent = composition.tanks.length;
+  ui.healerCount.textContent = composition.healers.length;
+  ui.dpsCount.textContent = composition.dps.length;
+  ui.raidSummary.textContent = `RAID DE ${raidSize}: ${tankCount} tanks · ${healerCount} heals · ${dpsCount} DPS`;
+  ui.raidSummary.hidden = false;
+  ui.raidComposition.hidden = false;
+}
+
+function renderRaidRole(list, members) {
+  list.replaceChildren();
+  members.forEach(player => {
+    const item = document.createElement("li");
+    item.className = "raid-player";
+    const name = document.createElement("strong");
+    name.textContent = player.name;
+    const spec = document.createElement("span");
+    spec.textContent = player.spec || player.category;
+    item.append(name, spec);
+    list.append(item);
+  });
+}
+
+function clearRaid() {
+  ui.raidSummary.hidden = true;
+  ui.raidComposition.hidden = true;
 }
 
 function renderHall() {

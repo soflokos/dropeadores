@@ -62,6 +62,43 @@
         <div id="resultReason"></div>
       </section>
 
+      <section class="raid-builder" aria-labelledby="raidBuilderTitle">
+        <div class="raid-builder-heading">
+          <div>
+            <p class="panel-kicker">MONTADOR OFICIAL DE CIRCOS</p>
+            <h2 id="raidBuilderTitle">COMPOSICIÓN RANDOM DE RAID</h2>
+          </div>
+          <p>Elige entre los supervivientes actuales, sin repetir jugadores.</p>
+        </div>
+
+        <div class="raid-controls">
+          <div class="raid-size-picker" role="group" aria-label="Tamaño de la raid">
+            <button class="raid-size-button active" type="button" data-raid-size="10" aria-pressed="true">10</button>
+            <button class="raid-size-button" type="button" data-raid-size="20" aria-pressed="false">20</button>
+            <button class="raid-size-button" type="button" data-raid-size="40" aria-pressed="false">40</button>
+          </div>
+          <button class="primary-button raid-generate" id="generateRaidButton" type="button" disabled>
+            <span aria-hidden="true">⚔</span> MONTAR LA RAID
+          </button>
+        </div>
+
+        <p class="raid-summary" id="raidSummary" hidden aria-live="polite"></p>
+        <div class="raid-composition" id="raidComposition" hidden>
+          <section class="role-column tank-column" aria-labelledby="tankTitle">
+            <h3 id="tankTitle">🛡 TANKS <span id="tankCount">0</span></h3>
+            <ul id="tankList"></ul>
+          </section>
+          <section class="role-column healer-column" aria-labelledby="healerTitle">
+            <h3 id="healerTitle">✚ HEALS <span id="healerCount">0</span></h3>
+            <ul id="healerList"></ul>
+          </section>
+          <section class="role-column dps-column" aria-labelledby="dpsTitle">
+            <h3 id="dpsTitle">⚔ DPS <span id="dpsCount">0</span></h3>
+            <ul id="dpsList"></ul>
+          </section>
+        </div>
+      </section>
+
       <div class="records-grid">
         <section class="record-panel" aria-labelledby="hallTitle">
           <h2 id="hallTitle"><span aria-hidden="true">☠</span> HALL OF SHAME</h2>
