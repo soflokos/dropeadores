@@ -3,42 +3,98 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#090909">
+  <meta name="theme-color" content="#0c0c0d">
   <meta name="description" content="¿Quién va a dropear esta semana? La ruleta oficial de NO GNOMO.">
   <title>NO GNOMO — Weekly Dropper</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" href="assets/no-gnomo-logo.png">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main class="container">
-    <header class="brand">
-      <img src="assets/no-gnomo-logo.png" alt="Logo de NO GNOMO: un gnomo tras una señal de prohibido" width="124" height="124">
-      <div class="guild-name">NO GNOMO</div>
-      <div class="subtitle">WORLD OF WARCRAFT: FOREVER</div>
+  <div class="page-shell">
+    <header class="hero">
+      <button class="music-toggle" id="musicToggle" type="button" aria-pressed="true" aria-label="Desactivar música de circo">
+        <span aria-hidden="true">🎪</span>
+        <span id="musicLabel">MÚSICA ON</span>
+      </button>
+
+      <img class="brand-logo" src="assets/no-gnomo-logo.png" alt="NO GNOMO" width="92" height="92">
+      <p class="kicker">WORLD OF WARCRAFT: FOREVER</p>
+      <h1>¿QUIÉN VA A <span>DROPEAR</span><br>ESTA SEMANA?</h1>
+      <p class="intro"><strong id="totalIntro">153</strong> personas se apuntaron. La ciencia dice que no todas seguirán aquí cuando se acabe el hype.</p>
+
+      <div class="stats" aria-label="Estado de la temporada">
+        <div class="stat-card">
+          <strong id="remainingCount">—</strong>
+          <span>SUPERVIVIENTES</span>
+        </div>
+        <div class="stat-card">
+          <strong id="fallenCount">0</strong>
+          <span>CAÍDOS</span>
+        </div>
+        <div class="stat-card">
+          <strong id="weekCount">1</strong>
+          <span>SEMANA</span>
+        </div>
+      </div>
     </header>
 
-    <h1>¿QUIÉN VA A<br><span>DROPEAR</span> ESTA SEMANA?</h1>
+    <main>
+      <section class="machine" id="machine" aria-label="Ruleta de jugadores">
+        <div class="screen">
+          <div class="selector-line selector-top" aria-hidden="true"></div>
+          <div class="player-name" id="playerName" aria-live="off">CARGANDO…</div>
+          <div class="player-meta" id="playerMeta">PREPARANDO EL CIRCO</div>
+          <div class="selector-line selector-bottom" aria-hidden="true"></div>
+        </div>
+      </section>
 
-    <section class="machine" id="machine" aria-label="Ruleta de jugadores">
-      <div class="machine-rivets" aria-hidden="true"></div>
-      <div class="screen">
-        <div id="name" aria-live="off">CARGANDO…</div>
+      <div class="actions">
+        <button class="primary-button" id="spinButton" type="button" disabled>
+          <span aria-hidden="true">🎰</span> ELEGIR AL PRÓXIMO DROPPER
+        </button>
+        <button class="secondary-button" id="undoButton" type="button" disabled>↶ Deshacer último</button>
+        <button class="secondary-button" id="resetButton" type="button" disabled>Reset temporada</button>
       </div>
-    </section>
 
-    <div class="controls">
-      <button id="spinButton" type="button" disabled>
-        <span aria-hidden="true">🎰</span> DROPEAR
-      </button>
-    </div>
+      <section class="result" id="result" hidden aria-live="polite">
+        <p>ESTA SEMANA HEMOS PERDIDO A</p>
+        <h2><span aria-hidden="true">☠</span> <span id="resultName"></span> <span aria-hidden="true">☠</span></h2>
+        <div id="resultReason"></div>
+      </section>
 
-    <section id="result" aria-live="polite"></section>
+      <div class="records-grid">
+        <section class="record-panel" aria-labelledby="hallTitle">
+          <h2 id="hallTitle"><span aria-hidden="true">☠</span> HALL OF SHAME</h2>
+          <div class="empty-state" id="hallEmpty">Todavía no ha caído nadie. Sospechoso.</div>
+          <ol class="hall-list" id="hallList"></ol>
+        </section>
 
-    <p class="stats"><strong id="playerCount">153</strong> héroes entraron. No todos llegarán al nivel máximo.</p>
-  </main>
+        <section class="record-panel" aria-labelledby="survivorsTitle">
+          <h2 id="survivorsTitle"><span aria-hidden="true">⚔</span> LOS QUE SIGUEN FINGIENDO QUE VAN A JUGAR</h2>
+          <div class="survivors-list" id="survivorsList"></div>
+        </section>
+      </div>
+    </main>
 
-  <div id="confettiLayer" aria-hidden="true"></div>
-  <noscript>Necesitas activar JavaScript para usar la ruleta.</noscript>
+    <footer>NO GNOMO · dato científico no revisado por pares · el historial se guarda en este navegador</footer>
+  </div>
+
+  <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <dialog id="resetDialog">
+    <form method="dialog">
+      <span class="dialog-kicker">RESET DE TEMPORADA</span>
+      <h2>¿Devolvemos a todos al circo?</h2>
+      <p>Se borrará el Hall of Shame guardado en este navegador y los 153 volverán a la ruleta.</p>
+      <div class="dialog-actions">
+        <button class="dialog-cancel" value="cancel">Cancelar</button>
+        <button class="dialog-confirm" id="confirmReset" value="confirm">Sí, resetear</button>
+      </div>
+    </form>
+  </dialog>
+
+  <noscript>Necesitas activar JavaScript para ejecutar la sentencia semanal.</noscript>
   <script src="app.js" defer></script>
 </body>
 </html>

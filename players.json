@@ -1,157 +1,769 @@
 {
   "players": [
-    "Lídernato",
-    "Gutitoman",
-    "Thila",
-    "NISEX",
-    "iviwii",
-    "Cille",
-    "Tsugi",
-    "Relos",
-    "Hectotanke",
-    "Docma",
-    "Porco",
-    "Grem",
-    "Yolo",
-    "Tripas",
-    "Virginmary",
-    "xhe",
-    "Soak",
-    "WiskQ",
-    "KLR",
-    "Emar",
-    "Txojanba",
-    "Bily",
-    "More",
-    "Marynxz",
-    "kazama",
-    "Beren",
-    "Ricardo",
-    "farmakill",
-    "Zalarq",
-    "Tote",
-    "Melki",
-    "Tegi",
-    "Ninetalles",
-    "Nerish",
-    "Baldu",
-    "Macaco",
-    "Kenstroyer",
-    "Nozy",
-    "Ronaldinho",
-    "Lenaoxton",
-    "Atomik",
-    "Thiago",
-    "Thedarkrais",
-    "Kalen",
-    "sneats",
-    "rankatorce",
-    "Nekron",
-    "Notxtreme",
-    "Najio",
-    "Bora",
-    "ImaToad",
-    "Morcillita",
-    "Titat",
-    "Eros",
-    "Rko",
-    "SeethR7",
-    "Corle",
-    "Legionario",
-    "Smokefun",
-    "Vasi",
-    "Srsmith",
-    "Loky",
-    "Últi",
-    "Vacachonda",
-    "Inmo",
-    "Orsini",
-    "Meuca",
-    "Uree",
-    "TeHacheCe",
-    "Fuwar",
-    "Zeon(lyrys)",
-    "Chocoflekes",
-    "uruk",
-    "Caramba",
-    "mateo9387",
-    "BLINDSPOT",
-    "Bargath",
-    "JavG6",
-    "Talon",
-    "Crackxel",
-    "Ch",
-    "Atisen",
-    "Weeda",
-    "Terrak",
-    "!Healthy",
-    "Zatoshi",
-    "Dayron",
-    "Torvik",
-    "Nardur",
-    "Lithor",
-    "Skat",
-    "Peju",
-    "Isenwald/Mygrain",
-    "Seifi",
-    "Seyua",
-    "Azkena",
-    ".",
-    "Radipwnz",
-    "skiizik",
-    "Rega",
-    "Lamus",
-    "bladorz",
-    "stroncho",
-    "Gyoon",
-    "Kukucha",
-    "Neurot0xina|nTx",
-    "Kalam",
-    "Boxx",
-    "El3cctron",
-    "cicladosano",
-    "MrReaper",
-    "Ratkid",
-    "AzzA",
-    "Elkili",
-    "Dayn",
-    "robuyo",
-    "Deprener",
-    "Frøstianø",
-    "Sacotico",
-    "Emsis",
-    "littleruuw",
-    "Venzo",
-    "Squalol",
-    "Sinhito",
-    "Chiringas",
-    "Muitox",
-    "Zera",
-    "Ceko",
-    "Hardz",
-    "bonney",
-    "Faelar",
-    "Typhosy",
-    "Dormamu",
-    "Kezz",
-    "Ghettolola",
-    "Varannis",
-    "akainor",
-    "ChyNoNyNo",
-    "Czecras(Vilant)",
-    "Electroll",
-    "ZanaThos",
-    "Kay",
-    "Yykk",
-    "Ømshøt",
-    "Stenald",
-    "Apokka",
-    "Bombur",
-    "Fsh",
-    "Taquito",
-    "Anuth",
-    "Manaslu",
-    "Antha",
-    "UTSoldier"
+    {
+      "name": "Lídernato",
+      "category": "Melee",
+      "spec": "Fury"
+    },
+    {
+      "name": "Gutitoman",
+      "category": "Ranged",
+      "spec": "Affliction"
+    },
+    {
+      "name": "Thila",
+      "category": "Tank",
+      "spec": "Protection1"
+    },
+    {
+      "name": "NISEX",
+      "category": "Tentative",
+      "spec": "Holy1"
+    },
+    {
+      "name": "iviwii",
+      "category": "Ranged",
+      "spec": "Affliction"
+    },
+    {
+      "name": "Cille",
+      "category": "Melee",
+      "spec": "Fury"
+    },
+    {
+      "name": "Tsugi",
+      "category": "Healer",
+      "spec": "Discipline"
+    },
+    {
+      "name": "Relos",
+      "category": "Melee",
+      "spec": "Combat"
+    },
+    {
+      "name": "Hectotanke",
+      "category": "Late",
+      "spec": "Protection"
+    },
+    {
+      "name": "Docma",
+      "category": "Melee",
+      "spec": "Survival"
+    },
+    {
+      "name": "Porco",
+      "category": "Melee",
+      "spec": "Enhancement"
+    },
+    {
+      "name": "Grem",
+      "category": "Melee",
+      "spec": "Survival"
+    },
+    {
+      "name": "Yolo",
+      "category": "Melee",
+      "spec": "Combat"
+    },
+    {
+      "name": "Tripas",
+      "category": "Melee",
+      "spec": "Combat"
+    },
+    {
+      "name": "Virginmary",
+      "category": "Healer",
+      "spec": "Discipline"
+    },
+    {
+      "name": "xhe",
+      "category": "Ranged",
+      "spec": "Fire"
+    },
+    {
+      "name": "Soak",
+      "category": "Healer",
+      "spec": "Discipline"
+    },
+    {
+      "name": "WiskQ",
+      "category": "Ranged",
+      "spec": "Elemental"
+    },
+    {
+      "name": "KLR",
+      "category": "Healer",
+      "spec": "Restoration"
+    },
+    {
+      "name": "Emar",
+      "category": "Ranged",
+      "spec": "Balance"
+    },
+    {
+      "name": "Txojanba",
+      "category": "Ranged",
+      "spec": "Beastmastery"
+    },
+    {
+      "name": "Bily",
+      "category": "Healer",
+      "spec": "Discipline"
+    },
+    {
+      "name": "More",
+      "category": "Ranged",
+      "spec": "Balance"
+    },
+    {
+      "name": "Marynxz",
+      "category": "Healer",
+      "spec": "Discipline"
+    },
+    {
+      "name": "kazama",
+      "category": "Melee",
+      "spec": "Combat"
+    },
+    {
+      "name": "Beren",
+      "category": "Ranged",
+      "spec": "Affliction"
+    },
+    {
+      "name": "Ricardo",
+      "category": "Melee",
+      "spec": "Retribution"
+    },
+    {
+      "name": "farmakill",
+      "category": "Tentative",
+      "spec": "Retribution"
+    },
+    {
+      "name": "Zalarq",
+      "category": "Tentative",
+      "spec": "Protection"
+    },
+    {
+      "name": "Tote",
+      "category": "Melee",
+      "spec": "Combat"
+    },
+    {
+      "name": "Melki",
+      "category": "Healer",
+      "spec": "Holy1"
+    },
+    {
+      "name": "Tegi",
+      "category": "Ranged",
+      "spec": "Beastmastery"
+    },
+    {
+      "name": "Ninetalles",
+      "category": "Healer",
+      "spec": "Discipline"
+    },
+    {
+      "name": "Nerish",
+      "category": "Ranged",
+      "spec": "Fire"
+    },
+    {
+      "name": "Baldu",
+      "category": "Healer",
+      "spec": "Discipline"
+    },
+    {
+      "name": "Macaco",
+      "category": "Melee",
+      "spec": "Enhancement"
+    },
+    {
+      "name": "Kenstroyer",
+      "category": "Tank",
+      "spec": "Protection1"
+    },
+    {
+      "name": "Nozy",
+      "category": "Melee",
+      "spec": "Fury"
+    },
+    {
+      "name": "Ronaldinho",
+      "category": "Ranged",
+      "spec": "Balance"
+    },
+    {
+      "name": "Lenaoxton",
+      "category": "Melee",
+      "spec": "Combat"
+    },
+    {
+      "name": "Atomik",
+      "category": "Melee",
+      "spec": "Fury"
+    },
+    {
+      "name": "Thiago",
+      "category": "Melee",
+      "spec": "Retribution"
+    },
+    {
+      "name": "Thedarkrais",
+      "category": "Ranged",
+      "spec": "Affliction"
+    },
+    {
+      "name": "Kalen",
+      "category": "Ranged",
+      "spec": "Shadow"
+    },
+    {
+      "name": "sneats",
+      "category": "Ranged",
+      "spec": "Fire"
+    },
+    {
+      "name": "rankatorce",
+      "category": "Melee",
+      "spec": "Fury"
+    },
+    {
+      "name": "Nekron",
+      "category": "Ranged",
+      "spec": "Shadow"
+    },
+    {
+      "name": "Notxtreme",
+      "category": "Ranged",
+      "spec": "Fire"
+    },
+    {
+      "name": "Najio",
+      "category": "Melee",
+      "spec": "Enhancement"
+    },
+    {
+      "name": "Bora",
+      "category": "Healer",
+      "spec": "Holy1"
+    },
+    {
+      "name": "ImaToad",
+      "category": "Tentative",
+      "spec": "Feral"
+    },
+    {
+      "name": "Morcillita",
+      "category": "Ranged",
+      "spec": "Affliction"
+    },
+    {
+      "name": "Titat",
+      "category": "Ranged",
+      "spec": "Fire"
+    },
+    {
+      "name": "Eros",
+      "category": "Melee",
+      "spec": "Combat"
+    },
+    {
+      "name": "Rko",
+      "category": "Ranged",
+      "spec": "Balance"
+    },
+    {
+      "name": "SeethR7",
+      "category": "Tank",
+      "spec": "Guardian"
+    },
+    {
+      "name": "Corle",
+      "category": "Ranged",
+      "spec": "Beastmastery"
+    },
+    {
+      "name": "Legionario",
+      "category": "Melee",
+      "spec": "Retribution"
+    },
+    {
+      "name": "Smokefun",
+      "category": "Ranged",
+      "spec": "Beastmastery"
+    },
+    {
+      "name": "Vasi",
+      "category": "Healer",
+      "spec": "Restoration1"
+    },
+    {
+      "name": "Srsmith",
+      "category": "Healer",
+      "spec": "Restoration1"
+    },
+    {
+      "name": "Loky",
+      "category": "Melee",
+      "spec": "Enhancement"
+    },
+    {
+      "name": "Últi",
+      "category": "Melee",
+      "spec": "Combat"
+    },
+    {
+      "name": "Vacachonda",
+      "category": "Ranged",
+      "spec": "Balance"
+    },
+    {
+      "name": "Inmo",
+      "category": "Ranged",
+      "spec": "Fire"
+    },
+    {
+      "name": "Orsini",
+      "category": "Ranged",
+      "spec": "Beastmastery"
+    },
+    {
+      "name": "Meuca",
+      "category": "Healer",
+      "spec": "Discipline"
+    },
+    {
+      "name": "Uree",
+      "category": "Melee",
+      "spec": "Fury"
+    },
+    {
+      "name": "TeHacheCe",
+      "category": "Ranged",
+      "spec": "Beastmastery"
+    },
+    {
+      "name": "Fuwar",
+      "category": "Tank",
+      "spec": "Protection"
+    },
+    {
+      "name": "Zeon(lyrys)",
+      "category": "Melee",
+      "spec": "Combat"
+    },
+    {
+      "name": "Chocoflekes",
+      "category": "Ranged",
+      "spec": "Fire"
+    },
+    {
+      "name": "uruk",
+      "category": "Ranged",
+      "spec": "Elemental"
+    },
+    {
+      "name": "Caramba",
+      "category": "Melee",
+      "spec": "Fury"
+    },
+    {
+      "name": "mateo9387",
+      "category": "Melee",
+      "spec": "Enhancement"
+    },
+    {
+      "name": "BLINDSPOT",
+      "category": "Ranged",
+      "spec": "Beastmastery"
+    },
+    {
+      "name": "Bargath",
+      "category": "Melee",
+      "spec": "Enhancement"
+    },
+    {
+      "name": "JavG6",
+      "category": "Melee",
+      "spec": "Fury"
+    },
+    {
+      "name": "Talon",
+      "category": "Ranged",
+      "spec": "Balance"
+    },
+    {
+      "name": "Crackxel",
+      "category": "Ranged",
+      "spec": "Affliction"
+    },
+    {
+      "name": "Ch",
+      "category": "Melee",
+      "spec": "Retribution"
+    },
+    {
+      "name": "Atisen",
+      "category": "Healer",
+      "spec": "Restoration1"
+    },
+    {
+      "name": "Weeda",
+      "category": "Melee",
+      "spec": "Fury"
+    },
+    {
+      "name": "Terrak",
+      "category": "Tank",
+      "spec": "Protection1"
+    },
+    {
+      "name": "!Healthy",
+      "category": "Ranged",
+      "spec": "Elemental"
+    },
+    {
+      "name": "Zatoshi",
+      "category": "Melee",
+      "spec": "Retribution"
+    },
+    {
+      "name": "Dayron",
+      "category": "Healer",
+      "spec": "Discipline"
+    },
+    {
+      "name": "Torvik",
+      "category": "Healer",
+      "spec": "Restoration"
+    },
+    {
+      "name": "Nardur",
+      "category": "Healer",
+      "spec": "Restoration"
+    },
+    {
+      "name": "Lithor",
+      "category": "Healer",
+      "spec": "Restoration1"
+    },
+    {
+      "name": "Skat",
+      "category": "Melee",
+      "spec": "Fury"
+    },
+    {
+      "name": "Peju",
+      "category": "Ranged",
+      "spec": "Fire"
+    },
+    {
+      "name": "Isenwald/Mygrain",
+      "category": "Tank",
+      "spec": "Protection1"
+    },
+    {
+      "name": "Seifi",
+      "category": "Healer",
+      "spec": "Restoration1"
+    },
+    {
+      "name": "Seyua",
+      "category": "Healer",
+      "spec": "Holy1"
+    },
+    {
+      "name": "Azkena",
+      "category": "Tank",
+      "spec": "Protection"
+    },
+    {
+      "name": ".",
+      "category": "Tank",
+      "spec": "Destruction"
+    },
+    {
+      "name": "Radipwnz",
+      "category": "Melee",
+      "spec": "Retribution"
+    },
+    {
+      "name": "skiizik",
+      "category": "Melee",
+      "spec": "Combat"
+    },
+    {
+      "name": "Rega",
+      "category": "Tank",
+      "spec": "Protection1"
+    },
+    {
+      "name": "Lamus",
+      "category": "Melee",
+      "spec": "Fury"
+    },
+    {
+      "name": "bladorz",
+      "category": "Tank",
+      "spec": "Protection1"
+    },
+    {
+      "name": "stroncho",
+      "category": "Healer",
+      "spec": "Restoration"
+    },
+    {
+      "name": "Gyoon",
+      "category": "Melee",
+      "spec": "Feral"
+    },
+    {
+      "name": "Kukucha",
+      "category": "Melee",
+      "spec": "Fury"
+    },
+    {
+      "name": "Neurot0xina|nTx",
+      "category": "Melee",
+      "spec": "Feral"
+    },
+    {
+      "name": "Kalam",
+      "category": "Melee",
+      "spec": "Assassination"
+    },
+    {
+      "name": "Boxx",
+      "category": "Ranged",
+      "spec": "Fire"
+    },
+    {
+      "name": "El3cctron",
+      "category": "Melee",
+      "spec": "Enhancement"
+    },
+    {
+      "name": "cicladosano",
+      "category": "Melee",
+      "spec": "Enhancement"
+    },
+    {
+      "name": "MrReaper",
+      "category": "Tank",
+      "spec": "Protection1"
+    },
+    {
+      "name": "Ratkid",
+      "category": "Melee",
+      "spec": "Combat"
+    },
+    {
+      "name": "AzzA",
+      "category": "Ranged",
+      "spec": "Fire"
+    },
+    {
+      "name": "Elkili",
+      "category": "Ranged",
+      "spec": "Elemental"
+    },
+    {
+      "name": "Dayn",
+      "category": "Healer",
+      "spec": "Discipline"
+    },
+    {
+      "name": "robuyo",
+      "category": "Melee",
+      "spec": "Feral"
+    },
+    {
+      "name": "Deprener",
+      "category": "Ranged",
+      "spec": "Beastmastery"
+    },
+    {
+      "name": "Frøstianø",
+      "category": "Ranged",
+      "spec": "Fire"
+    },
+    {
+      "name": "Sacotico",
+      "category": "Melee",
+      "spec": "Combat"
+    },
+    {
+      "name": "Emsis",
+      "category": "Healer",
+      "spec": "Restoration1"
+    },
+    {
+      "name": "littleruuw",
+      "category": "Ranged",
+      "spec": "Fire"
+    },
+    {
+      "name": "Venzo",
+      "category": "Melee",
+      "spec": "Combat"
+    },
+    {
+      "name": "Squalol",
+      "category": "Ranged",
+      "spec": "Affliction"
+    },
+    {
+      "name": "Sinhito",
+      "category": "Healer",
+      "spec": "Restoration1"
+    },
+    {
+      "name": "Chiringas",
+      "category": "Melee",
+      "spec": "Combat"
+    },
+    {
+      "name": "Muitox",
+      "category": "Ranged",
+      "spec": "Affliction"
+    },
+    {
+      "name": "Zera",
+      "category": "Healer",
+      "spec": "Holy1"
+    },
+    {
+      "name": "Ceko",
+      "category": "Ranged",
+      "spec": "Fire"
+    },
+    {
+      "name": "Hardz",
+      "category": "Healer",
+      "spec": "Restoration1"
+    },
+    {
+      "name": "bonney",
+      "category": "Melee",
+      "spec": "Combat"
+    },
+    {
+      "name": "Faelar",
+      "category": "Healer",
+      "spec": "Restoration1"
+    },
+    {
+      "name": "Typhosy",
+      "category": "Ranged",
+      "spec": "Shadow"
+    },
+    {
+      "name": "Dormamu",
+      "category": "Melee",
+      "spec": "Retribution"
+    },
+    {
+      "name": "Kezz",
+      "category": "Ranged",
+      "spec": "Beastmastery"
+    },
+    {
+      "name": "Ghettolola",
+      "category": "Melee",
+      "spec": "Enhancement"
+    },
+    {
+      "name": "Varannis",
+      "category": "Ranged",
+      "spec": "Fire"
+    },
+    {
+      "name": "akainor",
+      "category": "Ranged",
+      "spec": "Affliction"
+    },
+    {
+      "name": "ChyNoNyNo",
+      "category": "Melee",
+      "spec": "Fury"
+    },
+    {
+      "name": "Czecras(Vilant)",
+      "category": "Ranged",
+      "spec": "Fire"
+    },
+    {
+      "name": "Electroll",
+      "category": "Melee",
+      "spec": "Retribution"
+    },
+    {
+      "name": "ZanaThos",
+      "category": "Melee",
+      "spec": "Fury"
+    },
+    {
+      "name": "Kay",
+      "category": "Ranged",
+      "spec": "Affliction"
+    },
+    {
+      "name": "Yykk",
+      "category": "Melee",
+      "spec": "Retribution"
+    },
+    {
+      "name": "Ømshøt",
+      "category": "Tentative",
+      "spec": "Restoration1"
+    },
+    {
+      "name": "Stenald",
+      "category": "Ranged",
+      "spec": "Affliction"
+    },
+    {
+      "name": "Apokka",
+      "category": "Tank",
+      "spec": "Protection"
+    },
+    {
+      "name": "Bombur",
+      "category": "Tank",
+      "spec": "Protection"
+    },
+    {
+      "name": "Fsh",
+      "category": "Ranged",
+      "spec": "Affliction"
+    },
+    {
+      "name": "Taquito",
+      "category": "Healer",
+      "spec": "Restoration"
+    },
+    {
+      "name": "Anuth",
+      "category": "Ranged",
+      "spec": "Elemental"
+    },
+    {
+      "name": "Manaslu",
+      "category": "Ranged",
+      "spec": "Beastmastery"
+    },
+    {
+      "name": "Antha",
+      "category": "Ranged",
+      "spec": "Affliction"
+    },
+    {
+      "name": "UTSoldier",
+      "category": "Healer",
+      "spec": "Restoration1"
+    }
   ]
 }

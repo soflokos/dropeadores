@@ -1,33 +1,26 @@
 # NO GNOMO — Weekly Dropper
 
-Versión sencilla de la ruleta semanal de *WoW Forever*, preparada para GitHub Pages.
+Ruleta semanal de *WoW Forever*, preparada para GitHub Pages.
 
-## Contenido
+## Incluye
 
-- 153 nombres extraídos del JSON original, incluida la entrada `.`.
-- `players.json` solo contiene nombres: no incluye IDs de Discord ni otros metadatos.
-- Ruleta con giro rápido, frenado progresivo, amago final y confeti.
+- 153 participantes, incluida la entrada `.`.
+- El JSON público solo contiene nombre, categoría y especialización; no contiene IDs de Discord.
+- Ruleta animada con amago final.
+- Contadores de supervivientes, caídos y semana actual.
+- Hall of Shame persistente en el navegador.
+- Lista de supervivientes.
+- Botones para deshacer la última elección y reiniciar la temporada.
+- Música circense original sintetizada por el navegador durante la tirada, con control ON/OFF.
 - Logo original de NO GNOMO.
-- No contiene música ni archivos de audio.
 
-## Publicarlo gratis en GitHub Pages
+## Actualizar la web ya publicada
 
-1. Crea un repositorio público llamado, por ejemplo, `no-gnomo`.
-2. Sube todo el contenido de este ZIP a la raíz del repositorio.
-3. En GitHub, entra en **Settings → Pages**.
-4. En **Build and deployment**, elige **Deploy from a branch**.
-5. Selecciona `main`, la carpeta `/ (root)` y pulsa **Save**.
+En el repositorio de GitHub, pulsa **Add file → Upload files**, arrastra todos los archivos de este ZIP y confirma que quieres reemplazar los existentes. Después pulsa **Commit changes**. GitHub Pages publicará la actualización automáticamente.
 
-La dirección quedará así:
+## Primera publicación en GitHub Pages
 
-`https://TU-USUARIO.github.io/no-gnomo/`
-
-## Probarlo en local
-
-Como la web lee `players.json`, ábrela mediante un pequeño servidor:
-
-```bash
-python -m http.server 8000
-```
-
-Después visita `http://localhost:8000`.
+1. Sube todo el contenido de este ZIP a la raíz de un repositorio público.
+2. Entra en **Settings → Pages**.
+3. Elige **Deploy from a branch**, rama `main` y carpeta `/ (root)`.
+4. Pulsa **Save**.
