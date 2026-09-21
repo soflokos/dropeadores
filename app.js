@@ -1,7 +1,7 @@
 "use strict";
 
 const HISTORY_KEY = "no-gnomo-hall-of-shame-v1";
-const MUSIC_KEY = "no-gnomo-circus-music-v1";
+const SOUND_KEY = "no-gnomo-roulette-sound-v1";
 
 const reasons = [
   "lleva 4 días diciendo «mañana entro».",
@@ -44,23 +44,14 @@ const ui = {
 let players = [];
 let history = loadHistory();
 let spinning = false;
-let musicEnabled = localStorage.getItem(MUSIC_KEY) !== "off";
+let soundEnabled = localStorage.getItem(SOUND_KEY) !== "off";
 let audioContext = null;
-let circusTimer = null;
-let circusStep = 0;
-
-const circusMelody = [
-  523.25, 659.25, 783.99, 659.25, 698.46, 880.00, 783.99, 659.25,
-  587.33, 698.46, 880.00, 698.46, 659.25, 783.99, 987.77, 783.99,
-  523.25, 659.25, 783.99, 1046.50, 987.77, 880.00, 783.99, 659.25,
-  698.46, 783.99, 880.00, 783.99, 659.25, 587.33, 523.25, 392.00
-];
 
 init();
 
 async function init() {
   bindEvents();
-  syncMusicButton();
+  syncSoundButton();
 
   try {
     const response = await fetch("players.json", { cache: "no-store" });
@@ -88,7 +79,7 @@ function bindEvents() {
   ui.undoButton.addEventListener("click", undoLast);
   ui.resetButton.addEventListener("click", () => ui.resetDialog.showModal());
   ui.confirmReset.addEventListener("click", resetSeason);
-  ui.musicToggle.addEventListener("click", toggleMusic);
+  ui.musicToggle.addEventListener("click", toggleSound);
 }
 
 function loadHistory() {
@@ -147,7 +138,7 @@ async function spin() {
   ui.result.hidden = true;
   ui.machine.classList.remove("winner");
   ui.machine.classList.add("spinning");
-  startCircusMusic();
+  ensureAudio();
 
   const winner = pick(survivors);
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -155,28 +146,31 @@ async function spin() {
   if (!reducedMotion) {
     for (let index = 0; index < 32; index += 1) {
       setReel(pick(survivors));
+      playRouletteClick();
       await wait(43);
     }
 
     let delay = 65;
     for (let index = 0; index < 16; index += 1) {
       setReel(pick(survivors));
+      playRouletteClick();
       await wait(delay);
       delay += 20;
     }
 
     const fake = pick(survivors, winner.name);
     setReel(fake);
+    playRouletteClick(true);
     await wait(850);
     setReel(pick(survivors, winner.name));
+    playRouletteClick(true);
     await wait(380);
   }
 
-  stopCircusMusic();
   setReel(winner);
   ui.machine.classList.remove("spinning");
   ui.machine.classList.add("winner");
-  playFinalFlourish();
+  playWinnerSound();
 
   const entry = {
     name: winner.name,
@@ -212,7 +206,6 @@ function undoLast() {
 }
 
 function resetSeason() {
-  stopCircusMusic();
   history = [];
   saveHistory();
   ui.result.hidden = true;
@@ -263,19 +256,17 @@ function renderSurvivors(survivors) {
   });
 }
 
-function toggleMusic() {
-  musicEnabled = !musicEnabled;
-  localStorage.setItem(MUSIC_KEY, musicEnabled ? "on" : "off");
-  if (!musicEnabled) stopCircusMusic();
-  else if (spinning) startCircusMusic();
-  else playTone(523.25, .1, "square", .018);
-  syncMusicButton();
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  localStorage.setItem(SOUND_KEY, soundEnabled ? "on" : "off");
+  if (soundEnabled) playRouletteClick(true);
+  syncSoundButton();
 }
 
-function syncMusicButton() {
-  ui.musicToggle.setAttribute("aria-pressed", String(musicEnabled));
-  ui.musicToggle.setAttribute("aria-label", musicEnabled ? "Desactivar música de circo" : "Activar música de circo");
-  ui.musicLabel.textContent = musicEnabled ? "MÚSICA ON" : "MÚSICA OFF";
+function syncSoundButton() {
+  ui.musicToggle.setAttribute("aria-pressed", String(soundEnabled));
+  ui.musicToggle.setAttribute("aria-label", soundEnabled ? "Desactivar sonido de ruleta" : "Activar sonido de ruleta");
+  ui.musicLabel.textContent = soundEnabled ? "SONIDO ON" : "SONIDO OFF";
 }
 
 function ensureAudio() {
@@ -287,7 +278,7 @@ function ensureAudio() {
 }
 
 function playTone(frequency, duration, type = "square", volume = .018, delay = 0) {
-  if (!musicEnabled || !ensureAudio()) return;
+  if (!soundEnabled || !ensureAudio()) return;
   const start = audioContext.currentTime + delay;
   const oscillator = audioContext.createOscillator();
   const gain = audioContext.createGain();
@@ -301,29 +292,20 @@ function playTone(frequency, duration, type = "square", volume = .018, delay = 0
   oscillator.stop(start + duration + .02);
 }
 
-function startCircusMusic() {
-  if (!musicEnabled || circusTimer) return;
-  circusStep = 0;
-  const playStep = () => {
-    const note = circusMelody[circusStep % circusMelody.length];
-    playTone(note, .13, circusStep % 4 === 0 ? "sawtooth" : "square", .014);
-    if (circusStep % 4 === 0) playTone(note / 4, .23, "triangle", .025);
-    circusStep += 1;
-  };
-  playStep();
-  circusTimer = window.setInterval(playStep, 150);
+function playRouletteClick(strong = false) {
+  playTone(
+    strong ? 520 : 860,
+    strong ? .07 : .025,
+    "square",
+    strong ? .035 : .016
+  );
 }
 
-function stopCircusMusic() {
-  if (circusTimer) window.clearInterval(circusTimer);
-  circusTimer = null;
-}
-
-function playFinalFlourish() {
-  if (!musicEnabled) return;
-  playTone(523.25, .22, "square", .018, 0);
-  playTone(659.25, .22, "square", .018, .11);
-  playTone(783.99, .42, "sawtooth", .022, .22);
+function playWinnerSound() {
+  if (!soundEnabled) return;
+  playTone(392, .12, "square", .025, 0);
+  playTone(523.25, .14, "square", .025, .12);
+  playTone(783.99, .4, "sawtooth", .03, .25);
 }
 
 function launchConfetti() {
