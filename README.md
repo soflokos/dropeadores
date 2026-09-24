@@ -1,1 +1,1 @@
-# NO GNOMO — Weekly Dropper
+# NO GNOMO
