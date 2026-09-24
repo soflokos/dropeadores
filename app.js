@@ -663,10 +663,10 @@ function drawMetaScatterChart() {
     const y = margin.top + plotHeight * (1 - item.y / 100);
     const label = item.name;
     const point = createSvgElement("circle", { cx: x, cy: y, r: 7, fill: wowClassColors[item.className], stroke: "#111214", "stroke-width": 2 });
-    svg.append(addSvgTitle(point, `${label}: entiende ${item.x}% · experiencia poniendo excusas ${item.y}%`));
+    svg.append(addSvgTitle(point, `${label}: mecánicas correctas ${item.x}% · experiencia poniendo excusas ${item.y}%`));
     svg.append(createSvgElement("text", { x: x + 9, y: y - 8, class: "tick-label", fill: wowClassColors[item.className] }, label));
   });
-  svg.append(createSvgElement("text", { x: margin.left + plotWidth / 2, y: height - 2, "text-anchor": "middle", class: "axis-title" }, "Mecánicas entendidas (%)"));
+  svg.append(createSvgElement("text", { x: margin.left + plotWidth / 2, y: height - 2, "text-anchor": "middle", class: "axis-title" }, "Mecánicas realizadas correctamente (%)"));
   svg.append(createSvgElement("text", { x: 13, y: margin.top + plotHeight / 2, "text-anchor": "middle", class: "axis-title", transform: `rotate(-90 13 ${margin.top + plotHeight / 2})` }, "Experiencia poniendo excusas (%)"));
 }
 
