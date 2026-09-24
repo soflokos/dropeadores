@@ -744,6 +744,36 @@ body.side-sheet-open { overflow: hidden; }
 .meta-chart-panel h3 { margin: 0; color: #ddd9d5; font-size: 1rem; }
 .meta-chart-panel p { margin: 5px 0 9px; color: #898c91; font-size: .82rem; line-height: 1.4; }
 
+.meta-player-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 11px 0 2px;
+}
+
+.meta-player-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  color: var(--class-color);
+  font-size: .86rem;
+}
+
+.meta-player-legend i {
+  width: 18px;
+  height: 3px;
+  flex: none;
+  background: var(--class-color);
+  border-radius: 3px;
+}
+
+.meta-player-legend strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .meta-chart {
   display: block;
   width: 100%;

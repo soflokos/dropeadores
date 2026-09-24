@@ -149,6 +149,7 @@ const ui = {
   metaBarChart: document.querySelector("#metaBarChart"),
   metaScatterChart: document.querySelector("#metaScatterChart"),
   metaLineChart: document.querySelector("#metaLineChart"),
+  metaPuddleLegend: document.querySelector("#metaPuddleLegend"),
   metaPuddleChart: document.querySelector("#metaPuddleChart"),
   metaBarrierChart: document.querySelector("#metaBarrierChart"),
   musicToggle: document.querySelector("#musicToggle"),
@@ -528,6 +529,7 @@ function generateMetaLab() {
     distance: randomWhole(24, 40),
     lateral: randomWhole(-18, 18)
   }));
+  renderMetaPuddleLegend();
 
   ui.metaHeadline.textContent = metaHeadlines[randomIndex(metaHeadlines.length)];
   ui.metaReportSeed.textContent = `Informe #${randomWhole(1000, 9999)} · parche 0.bar.${randomWhole(1, 9)} · generado al entrar`;
@@ -550,6 +552,19 @@ function getMetaPlayerSample(count, excludedNames = new Set()) {
     .filter(spec => !spec.special && !excludedNames.has(spec.name))
     .map(spec => ({ name: spec.name, className: spec.className }));
   return shuffled([...fromJson, ...fallback]).slice(0, count);
+}
+
+function renderMetaPuddleLegend() {
+  ui.metaPuddleLegend.replaceChildren();
+  metaChartData.puddle.forEach(player => {
+    const item = document.createElement("span");
+    item.dataset.wowClass = player.className;
+    const dot = document.createElement("i");
+    const name = document.createElement("strong");
+    name.textContent = player.name;
+    item.append(dot, name);
+    ui.metaPuddleLegend.append(item);
+  });
 }
 
 function renderMetaTierList() {
@@ -694,7 +709,7 @@ function drawMetaLineChart() {
 function drawMetaPuddleChart() {
   const svg = ui.metaPuddleChart;
   const { width, height } = prepareMetaChart(svg, 275);
-  const margin = { top: 17, right: width < 500 ? 92 : 135, bottom: 40, left: 58 };
+  const margin = { top: 17, right: 22, bottom: 40, left: 58 };
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
 
@@ -720,8 +735,6 @@ function drawMetaPuddleChart() {
       const marker = createSvgElement("circle", { cx: point.x, cy: point.y, r: 4, fill: wowClassColors[item.className] });
       svg.append(addSvgTitle(marker, `${item.name}: ${point.value} DPS a los ${index * 2} segundos`));
     });
-    const last = points[points.length - 1];
-    svg.append(createSvgElement("text", { x: last.x + 8, y: last.y + 4, class: "tick-label", fill: wowClassColors[item.className] }, item.name));
   });
 
   svg.append(createSvgElement("text", { x: margin.left + plotWidth / 2, y: height - 3, "text-anchor": "middle", class: "axis-title" }, "Segundos desde que aparece el charco"));
