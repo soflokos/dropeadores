@@ -71,7 +71,7 @@ const metaSpecs = [
   { name: "Protection", className: "Warrior", role: "tank" },
   { name: "Protection", className: "Paladin", role: "tank" },
   { name: "Guardian", className: "Druid", role: "tank" },
-  { name: "🛡️ Fuwar", className: "Warrior", role: "tank", special: true },
+  { name: "🛡️ Fuwar", className: "Warrior", role: "dps", special: true },
   { name: "Holy", className: "Paladin", role: "healer" },
   { name: "Discipline", className: "Priest", role: "healer" },
   { name: "Holy", className: "Priest", role: "healer" },
@@ -149,6 +149,8 @@ const ui = {
   metaBarChart: document.querySelector("#metaBarChart"),
   metaScatterChart: document.querySelector("#metaScatterChart"),
   metaLineChart: document.querySelector("#metaLineChart"),
+  metaPuddleChart: document.querySelector("#metaPuddleChart"),
+  metaBarrierChart: document.querySelector("#metaBarrierChart"),
   musicToggle: document.querySelector("#musicToggle"),
   musicLabel: document.querySelector("#musicLabel"),
   resetDialog: document.querySelector("#resetDialog"),
@@ -478,15 +480,24 @@ function generateMetaLab() {
 
   const dpsPool = shuffled(metaSpecs.filter(spec => spec.role === "dps"));
   const fuwar = metaSpecs.find(spec => spec.special);
-  metaChartData.bars = shuffled([
-    { ...fuwar, value: randomWhole(650, 1250) },
-    ...dpsPool.slice(0, 5).map(spec => ({ ...spec, value: randomWhole(420, 1180) }))
-  ]).sort((left, right) => right.value - left.value);
-  metaChartData.scatter = [
-    { ...fuwar, x: randomWhole(15, 95), y: randomWhole(650, 1180) },
-    ...dpsPool.slice(5, 10).map(spec => ({ ...spec, x: randomWhole(8, 96), y: randomWhole(430, 1180) }))
+  const randomDps = dpsPool.find(spec => !spec.special) || dpsPool[0];
+  const ourDps = dpsPool.find(spec => spec !== randomDps && !spec.special) || dpsPool[1];
+  metaChartData.bars = [
+    { name: "Random sin bis", className: randomDps.className, value: randomWhole(1050, 1350) },
+    { name: "Nuestro DPS con bis", className: ourDps.className, value: randomWhole(480, 790) }
   ];
-  metaChartData.lines = [fuwar, ...dpsPool.slice(10, 12)].map(spec => {
+
+  const excusePlayers = getMetaPlayerSample(5);
+  metaChartData.scatter = excusePlayers.map(player => {
+    const mechanics = randomWhole(5, 92);
+    return {
+      ...player,
+      x: mechanics,
+      y: Math.max(4, Math.min(100, 105 - mechanics + randomWhole(-16, 18)))
+    };
+  });
+
+  metaChartData.lines = [fuwar, ...dpsPool.filter(spec => !spec.special).slice(5, 7)].map(spec => {
     let value = randomWhole(86, 100);
     return {
       ...spec,
@@ -497,6 +508,27 @@ function generateMetaLab() {
     };
   });
 
+  const usedNames = new Set(excusePlayers.map(player => player.name));
+  metaChartData.puddle = getMetaPlayerSample(5, usedNames).map((player, playerIndex) => {
+    let value = randomWhole(760, 1280);
+    const crashPoint = randomWhole(2, 4);
+    const floor = 18 + playerIndex * 22;
+    return {
+      ...player,
+      values: Array.from({ length: 7 }, (_, index) => {
+        if (index < crashPoint) value = Math.max(650, value + randomWhole(-80, 70));
+        if (index === crashPoint) value = randomWhole(120, 330);
+        if (index > crashPoint) value = Math.max(floor, value - randomWhole(55, 160));
+        return Math.round(value);
+      })
+    };
+  });
+  metaChartData.barriers = Array.from({ length: randomWhole(30, 42) }, (_, index) => ({
+    attempt: index + 1,
+    distance: randomWhole(24, 40),
+    lateral: randomWhole(-18, 18)
+  }));
+
   ui.metaHeadline.textContent = metaHeadlines[randomIndex(metaHeadlines.length)];
   ui.metaReportSeed.textContent = `Informe #${randomWhole(1000, 9999)} · parche 0.bar.${randomWhole(1, 9)} · generado al entrar`;
   renderMetaTierList();
@@ -505,6 +537,19 @@ function generateMetaLab() {
 
 function randomWhole(minimum, maximum) {
   return Math.floor(minimum + Math.random() * (maximum - minimum + 1));
+}
+
+function getMetaPlayerSample(count, excludedNames = new Set()) {
+  const fromJson = players
+    .filter(player => !excludedNames.has(player.name))
+    .map(player => ({ name: player.name, className: classFor(player) }));
+
+  if (fromJson.length >= count) return shuffled(fromJson).slice(0, count);
+
+  const fallback = metaSpecs
+    .filter(spec => !spec.special && !excludedNames.has(spec.name))
+    .map(spec => ({ name: spec.name, className: spec.className }));
+  return shuffled([...fromJson, ...fallback]).slice(0, count);
 }
 
 function renderMetaTierList() {
@@ -559,27 +604,27 @@ function prepareMetaChart(svg, height) {
 function drawMetaBarChart() {
   const svg = ui.metaBarChart;
   const { width, height } = prepareMetaChart(svg, 235);
-  const margin = { top: 12, right: 42, bottom: 34, left: 110 };
+  const margin = { top: 12, right: 52, bottom: 38, left: width < 500 ? 118 : 145 };
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
 
   [0, .25, .5, .75, 1].forEach(tick => {
     const x = margin.left + plotWidth * tick;
     svg.append(createSvgElement("line", { x1: x, y1: margin.top, x2: x, y2: margin.top + plotHeight, class: "grid" }));
-    svg.append(createSvgElement("text", { x, y: height - 18, "text-anchor": "middle", class: "tick-label" }, Math.round(1300 * tick)));
+    svg.append(createSvgElement("text", { x, y: height - 20, "text-anchor": "middle", class: "tick-label" }, Math.round(1400 * tick)));
   });
 
   const rowHeight = plotHeight / metaChartData.bars.length;
   metaChartData.bars.forEach((item, index) => {
     const y = margin.top + index * rowHeight + 5;
-    const barWidth = plotWidth * (item.value / 1300);
-    const label = item.special ? "🛡️ Fuwar" : item.name;
+    const barWidth = plotWidth * (item.value / 1400);
+    const label = item.name;
     svg.append(createSvgElement("text", { x: margin.left - 8, y: y + rowHeight * .45, "text-anchor": "end", class: "tick-label", fill: wowClassColors[item.className] }, label));
     const bar = createSvgElement("rect", { x: margin.left, y, width: barWidth, height: Math.max(12, rowHeight - 10), rx: 3, fill: wowClassColors[item.className] });
     svg.append(addSvgTitle(bar, `${label}: ${item.value} DPS inventado`));
     svg.append(createSvgElement("text", { x: margin.left + barWidth + 6, y: y + rowHeight * .45, class: "tick-label" }, item.value));
   });
-  svg.append(createSvgElement("text", { x: margin.left + plotWidth / 2, y: height - 2, "text-anchor": "middle", class: "axis-title" }, "DPS totalmente verificado"));
+  svg.append(createSvgElement("text", { x: margin.left + plotWidth / 2, y: height - 3, "text-anchor": "middle", class: "axis-title" }, "DPS según fuentes interesadas"));
 }
 
 function drawMetaScatterChart() {
@@ -595,19 +640,19 @@ function drawMetaScatterChart() {
     svg.append(createSvgElement("line", { x1: x, y1: margin.top, x2: x, y2: margin.top + plotHeight, class: "grid" }));
     svg.append(createSvgElement("line", { x1: margin.left, y1: y, x2: margin.left + plotWidth, y2: y, class: "grid" }));
     svg.append(createSvgElement("text", { x, y: height - 18, "text-anchor": "middle", class: "tick-label" }, Math.round(100 * tick)));
-    svg.append(createSvgElement("text", { x: margin.left - 7, y: y + 4, "text-anchor": "end", class: "tick-label" }, Math.round(400 + 800 * tick)));
+    svg.append(createSvgElement("text", { x: margin.left - 7, y: y + 4, "text-anchor": "end", class: "tick-label" }, Math.round(100 * tick)));
   });
 
   metaChartData.scatter.forEach(item => {
     const x = margin.left + plotWidth * (item.x / 100);
-    const y = margin.top + plotHeight * (1 - (item.y - 400) / 800);
-    const label = item.special ? "🛡️ Fuwar" : item.name;
-    const point = createSvgElement("circle", { cx: x, cy: y, r: item.special ? 8 : 7, fill: wowClassColors[item.className], stroke: "#111214", "stroke-width": 2 });
-    svg.append(addSvgTitle(point, `${label}: entiende ${item.x}% · declara ${item.y} DPS`));
+    const y = margin.top + plotHeight * (1 - item.y / 100);
+    const label = item.name;
+    const point = createSvgElement("circle", { cx: x, cy: y, r: 7, fill: wowClassColors[item.className], stroke: "#111214", "stroke-width": 2 });
+    svg.append(addSvgTitle(point, `${label}: entiende ${item.x}% · experiencia poniendo excusas ${item.y}%`));
     svg.append(createSvgElement("text", { x: x + 9, y: y - 8, class: "tick-label", fill: wowClassColors[item.className] }, label));
   });
   svg.append(createSvgElement("text", { x: margin.left + plotWidth / 2, y: height - 2, "text-anchor": "middle", class: "axis-title" }, "Mecánicas entendidas (%)"));
-  svg.append(createSvgElement("text", { x: 13, y: margin.top + plotHeight / 2, "text-anchor": "middle", class: "axis-title", transform: `rotate(-90 13 ${margin.top + plotHeight / 2})` }, "DPS declarado"));
+  svg.append(createSvgElement("text", { x: 13, y: margin.top + plotHeight / 2, "text-anchor": "middle", class: "axis-title", transform: `rotate(-90 13 ${margin.top + plotHeight / 2})` }, "Experiencia poniendo excusas (%)"));
 }
 
 function drawMetaLineChart() {
@@ -646,11 +691,99 @@ function drawMetaLineChart() {
   svg.append(createSvgElement("text", { x: 13, y: margin.top + plotHeight / 2, "text-anchor": "middle", class: "axis-title", transform: `rotate(-90 13 ${margin.top + plotHeight / 2})` }, "Hype restante (%)"));
 }
 
+function drawMetaPuddleChart() {
+  const svg = ui.metaPuddleChart;
+  const { width, height } = prepareMetaChart(svg, 275);
+  const margin = { top: 17, right: width < 500 ? 92 : 135, bottom: 40, left: 58 };
+  const plotWidth = width - margin.left - margin.right;
+  const plotHeight = height - margin.top - margin.bottom;
+
+  [0, .25, .5, .75, 1].forEach(tick => {
+    const y = margin.top + plotHeight * (1 - tick);
+    svg.append(createSvgElement("line", { x1: margin.left, y1: y, x2: margin.left + plotWidth, y2: y, class: "grid" }));
+    svg.append(createSvgElement("text", { x: margin.left - 8, y: y + 4, "text-anchor": "end", class: "tick-label" }, Math.round(1400 * tick)));
+  });
+
+  for (let second = 0; second <= 12; second += 2) {
+    const x = margin.left + plotWidth * (second / 12);
+    svg.append(createSvgElement("text", { x, y: height - 21, "text-anchor": "middle", class: "tick-label" }, second));
+  }
+
+  metaChartData.puddle.forEach(item => {
+    const points = item.values.map((value, index) => ({
+      value,
+      x: margin.left + plotWidth * (index / 6),
+      y: margin.top + plotHeight * (1 - value / 1400)
+    }));
+    svg.append(createSvgElement("polyline", { points: points.map(point => `${point.x},${point.y}`).join(" "), fill: "none", stroke: wowClassColors[item.className], "stroke-width": 3, "stroke-linejoin": "round", "stroke-linecap": "round" }));
+    points.forEach((point, index) => {
+      const marker = createSvgElement("circle", { cx: point.x, cy: point.y, r: 4, fill: wowClassColors[item.className] });
+      svg.append(addSvgTitle(marker, `${item.name}: ${point.value} DPS a los ${index * 2} segundos`));
+    });
+    const last = points[points.length - 1];
+    svg.append(createSvgElement("text", { x: last.x + 8, y: last.y + 4, class: "tick-label", fill: wowClassColors[item.className] }, item.name));
+  });
+
+  svg.append(createSvgElement("text", { x: margin.left + plotWidth / 2, y: height - 3, "text-anchor": "middle", class: "axis-title" }, "Segundos desde que aparece el charco"));
+  svg.append(createSvgElement("text", { x: 14, y: margin.top + plotHeight / 2, "text-anchor": "middle", class: "axis-title", transform: `rotate(-90 14 ${margin.top + plotHeight / 2})` }, "DPS"));
+}
+
+function drawMetaBarrierChart() {
+  const svg = ui.metaBarrierChart;
+  const { width, height } = prepareMetaChart(svg, 300);
+  const margin = { top: 42, right: 28, bottom: 44, left: 58 };
+  const plotWidth = width - margin.left - margin.right;
+  const plotHeight = height - margin.top - margin.bottom;
+  const xFor = distance => margin.left + plotWidth * (distance / 40);
+  const yFor = lateral => margin.top + plotHeight * (1 - (lateral + 20) / 40);
+
+  svg.append(createSvgElement("text", { x: margin.left, y: 21, class: "barrier-summary" }, `${metaChartData.barriers.length} BARRIERS · 0 EN MELEE`));
+  svg.append(createSvgElement("text", { x: width - margin.right, y: 21, "text-anchor": "end", class: "barrier-parla" }, "PARLA →"));
+
+  [0, 10, 20, 30, 40].forEach(distance => {
+    const x = xFor(distance);
+    svg.append(createSvgElement("line", { x1: x, y1: margin.top, x2: x, y2: margin.top + plotHeight, class: "grid" }));
+    svg.append(createSvgElement("text", { x, y: height - 23, "text-anchor": "middle", class: "tick-label" }, distance));
+  });
+  [-20, -10, 0, 10, 20].forEach(lateral => {
+    const y = yFor(lateral);
+    svg.append(createSvgElement("line", { x1: margin.left, y1: y, x2: margin.left + plotWidth, y2: y, class: "grid" }));
+    svg.append(createSvgElement("text", { x: margin.left - 8, y: y + 4, "text-anchor": "end", class: "tick-label" }, lateral));
+  });
+
+  const meleeZone = createSvgElement("rect", {
+    x: xFor(0),
+    y: yFor(5),
+    width: xFor(5) - xFor(0),
+    height: yFor(-5) - yFor(5),
+    rx: 8,
+    class: "barrier-melee-zone"
+  });
+  svg.append(meleeZone);
+  svg.append(createSvgElement("circle", { cx: xFor(1.5), cy: yFor(0), r: 7, class: "barrier-raid-dot" }));
+  svg.append(createSvgElement("text", { x: xFor(1.5) + 11, y: yFor(0) - 10, class: "barrier-raid-label" }, "RAID + BOSS"));
+
+  metaChartData.barriers.forEach(barrier => {
+    const ring = createSvgElement("circle", {
+      cx: xFor(barrier.distance),
+      cy: yFor(barrier.lateral),
+      r: randomWhole(6, 10),
+      class: "barrier-ring"
+    });
+    svg.append(addSvgTitle(ring, `Barrier #${barrier.attempt}: ${barrier.distance} m de la raid`));
+  });
+
+  svg.append(createSvgElement("text", { x: margin.left + plotWidth / 2, y: height - 3, "text-anchor": "middle", class: "axis-title" }, "Distancia respecto a la raid (m)"));
+  svg.append(createSvgElement("text", { x: 14, y: margin.top + plotHeight / 2, "text-anchor": "middle", class: "axis-title", transform: `rotate(-90 14 ${margin.top + plotHeight / 2})` }, "Desvío lateral (m)"));
+}
+
 function drawMetaCharts() {
   if (!metaChartData.bars) return;
   drawMetaBarChart();
   drawMetaScatterChart();
   drawMetaLineChart();
+  drawMetaPuddleChart();
+  drawMetaBarrierChart();
 }
 
 function redrawMetaCharts() {

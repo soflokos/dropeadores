@@ -385,13 +385,13 @@ body.side-sheet-open { overflow: hidden; }
 .raid-sheet-header p {
   margin: 0 0 5px;
   color: var(--red);
-  font-size: .64rem;
+  font-size: .75rem;
   font-weight: 900;
   letter-spacing: .2em;
 }
 
-.raid-sheet-header h2 { margin: 0; color: #eeeae6; font-size: 1.8rem; letter-spacing: -.02em; }
-.raid-sheet-header span { display: block; margin-top: 6px; color: #8f8b86; font-size: .8rem; }
+.raid-sheet-header h2 { margin: 0; color: #eeeae6; font-size: 2rem; letter-spacing: -.02em; }
+.raid-sheet-header span { display: block; margin-top: 7px; color: #a49f99; font-size: .95rem; line-height: 1.45; }
 
 .sheet-header-actions {
   display: flex;
@@ -408,7 +408,7 @@ body.side-sheet-open { overflow: hidden; }
   border: 1px solid #37393d;
   border-radius: 9px;
   cursor: pointer;
-  font-size: .7rem;
+  font-size: .8rem;
   font-weight: 900;
   letter-spacing: .07em;
 }
@@ -460,6 +460,7 @@ body.side-sheet-open { overflow: hidden; }
   border: 0;
   border-radius: 7px;
   cursor: pointer;
+  font-size: .9rem;
   font-weight: 900;
 }
 
@@ -488,7 +489,7 @@ body.side-sheet-open { overflow: hidden; }
   gap: 9px;
   margin: 17px 0 12px;
   color: #8d8984;
-  font-size: .85rem;
+  font-size: 1rem;
 }
 
 .raid-sheet-status strong { color: #eeeae6; }
@@ -508,7 +509,7 @@ body.side-sheet-open { overflow: hidden; }
   border-radius: 10px;
 }
 
-.raid-group h3 { margin: 0 0 7px; color: #aaa7a2; font-size: .76rem; letter-spacing: .16em; }
+.raid-group h3 { margin: 0 0 8px; color: #aaa7a2; font-size: .86rem; letter-spacing: .14em; }
 .raid-group-list { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
 
 .raid-member {
@@ -536,7 +537,7 @@ body.side-sheet-open { overflow: hidden; }
   align-self: end;
   overflow: hidden;
   color: var(--class-color);
-  font-size: .88rem;
+  font-size: 1rem;
   font-weight: 900;
   line-height: 1.1;
   text-overflow: ellipsis;
@@ -548,13 +549,13 @@ body.side-sheet-open { overflow: hidden; }
   align-self: start;
   overflow: hidden;
   color: #777a7f;
-  font-size: .68rem;
+  font-size: .78rem;
   line-height: 1.15;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.raid-member-role { color: #777a7f; font-size: .68rem; font-weight: 900; }
+.raid-member-role { color: #8a8d92; font-size: .78rem; font-weight: 900; }
 
 [data-wow-class="Warrior"] { --class-color: #c69b6d; }
 [data-wow-class="Paladin"] { --class-color: #f48cba; }
@@ -572,7 +573,7 @@ body.side-sheet-open { overflow: hidden; }
   gap: 7px 13px;
   margin-top: 16px;
   color: #7e7b77;
-  font-size: .72rem;
+  font-size: .84rem;
 }
 
 .class-legend span { display: inline-flex; align-items: center; gap: 5px; }
@@ -585,7 +586,7 @@ body.side-sheet-open { overflow: hidden; }
   background: #191a1c;
   border: 1px solid #303236;
   border-radius: 10px;
-  font-size: .85rem;
+  font-size: .98rem;
 }
 
 .raid-comp-message[hidden] { display: none; }
@@ -596,7 +597,7 @@ body.side-sheet-open { overflow: hidden; }
   display: block;
   margin-top: 7px;
   color: #66696e;
-  font-size: .67rem;
+  font-size: .8rem;
 }
 
 .meta-toolbar {
@@ -629,7 +630,7 @@ body.side-sheet-open { overflow: hidden; }
   border: 0;
   border-radius: 7px;
   cursor: pointer;
-  font-size: .75rem;
+  font-size: .88rem;
   font-weight: 900;
 }
 
@@ -648,7 +649,7 @@ body.side-sheet-open { overflow: hidden; }
 .meta-headline {
   margin: 15px 2px 13px;
   color: #9f9992;
-  font-size: .76rem;
+  font-size: .9rem;
 }
 
 .meta-headline strong { color: #e34a43; }
@@ -717,13 +718,13 @@ body.side-sheet-open { overflow: hidden; }
 .meta-spec strong {
   overflow: hidden;
   color: var(--class-color);
-  font-size: .8rem;
+  font-size: .96rem;
   line-height: 1.1;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.meta-spec span { color: #73767b; font-size: .64rem; }
+.meta-spec span { color: #85888d; font-size: .78rem; }
 
 .meta-chart-grid {
   display: grid;
@@ -740,8 +741,8 @@ body.side-sheet-open { overflow: hidden; }
 }
 
 .meta-chart-panel.wide { grid-column: 1 / -1; }
-.meta-chart-panel h3 { margin: 0; color: #ddd9d5; font-size: .84rem; }
-.meta-chart-panel p { margin: 4px 0 8px; color: #777a7f; font-size: .67rem; }
+.meta-chart-panel h3 { margin: 0; color: #ddd9d5; font-size: 1rem; }
+.meta-chart-panel p { margin: 5px 0 9px; color: #898c91; font-size: .82rem; line-height: 1.4; }
 
 .meta-chart {
   display: block;
@@ -752,15 +753,22 @@ body.side-sheet-open { overflow: hidden; }
 
 .meta-chart text { font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
 .meta-chart .grid { stroke: #2e3034; stroke-width: 1; }
-.meta-chart .tick-label { fill: #888b90; font-size: 11px; }
-.meta-chart .axis-title { fill: #9b9da2; font-size: 11px; }
+.meta-chart .tick-label { fill: #96999e; font-size: 13px; }
+.meta-chart .axis-title { fill: #aaadb2; font-size: 13px; }
+.meta-chart .barrier-summary { fill: #f1eeea; font-size: 15px; font-weight: 900; }
+.meta-chart .barrier-parla { fill: #ee554d; font-size: 14px; font-weight: 900; }
+.meta-chart .barrier-melee-zone { fill: rgba(121,185,135,.13); stroke: #79b987; stroke-width: 2; stroke-dasharray: 5 4; }
+.meta-chart .barrier-raid-dot { fill: #ee3129; stroke: #ff8780; stroke-width: 3; }
+.meta-chart .barrier-raid-label { fill: #dfdcd8; font-size: 13px; font-weight: 900; }
+.meta-chart .barrier-ring { fill: rgba(255,255,255,.06); stroke: #fff; stroke-width: 2; opacity: .78; }
 
 .meta-disclaimer {
   margin: 15px 0 0;
   padding-top: 12px;
   color: #66696e;
   border-top: 1px solid #2d2f33;
-  font-size: .7rem;
+  font-size: .84rem;
+  line-height: 1.45;
   text-align: center;
 }
 
@@ -815,7 +823,7 @@ noscript { display: block; padding: 14px; background: #8f1713; text-align: cente
   .hall-entry { grid-template-columns: 62px minmax(0,1fr); }
   .hall-entry span { display: none; }
   .raid-sheet { width: 100%; padding: 18px 14px 26px; }
-  .raid-sheet-header h2 { font-size: 1.45rem; }
+  .raid-sheet-header h2 { font-size: 1.65rem; }
   .raid-sheet-header { align-items: flex-start; }
   .sheet-header-actions { flex-direction: column-reverse; align-items: stretch; }
   .sheet-switch-button { min-height: 36px; padding-inline: 9px; }
