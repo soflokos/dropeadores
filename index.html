@@ -17,6 +17,10 @@
           <span aria-hidden="true">⚔</span>
           <span>RAID COMP</span>
         </button>
+        <button class="meta-lab-toggle" id="openMetaLab" type="button" aria-haspopup="dialog" aria-controls="metaLabSheet">
+          <span aria-hidden="true">▥</span>
+          <span>META LAB</span>
+        </button>
         <button class="music-toggle" id="musicToggle" type="button" aria-pressed="true" aria-label="Desactivar sonido de ruleta">
           <span aria-hidden="true">🔊</span>
           <span id="musicLabel">SONIDO ON</span>
@@ -94,7 +98,10 @@
           <h2 id="raidSheetTitle">Raid Comp Generator</h2>
           <span>Grupos clásicos de 5 usando los supervivientes de la temporada.</span>
         </div>
-        <button class="raid-sheet-close" id="closeRaidComp" type="button" aria-label="Cerrar panel">×</button>
+        <div class="sheet-header-actions">
+          <button class="sheet-switch-button" id="switchToMetaLab" type="button"><span aria-hidden="true">▥</span> META LAB</button>
+          <button class="raid-sheet-close" id="closeRaidComp" type="button" aria-label="Cerrar panel">×</button>
+        </div>
       </header>
 
       <div class="raid-sheet-controls">
@@ -130,6 +137,65 @@
         <span data-wow-class="Warlock"><i></i>Warlock</span>
         <span data-wow-class="Druid"><i></i>Druid</span>
       </div>
+    </aside>
+  </div>
+
+  <div class="raid-sheet-shell meta-sheet-shell" id="metaLabSheet" hidden>
+    <button class="raid-sheet-backdrop" id="metaSheetBackdrop" type="button" aria-label="Cerrar Meta Lab"></button>
+    <aside class="raid-sheet meta-sheet" role="dialog" aria-modal="true" aria-labelledby="metaSheetTitle">
+      <header class="raid-sheet-header meta-sheet-header">
+        <div>
+          <p>NO GNOMO RESEARCH DEPARTMENT</p>
+          <h2 id="metaSheetTitle">Meta Lab</h2>
+          <span>Análisis competitivo basado en datos, rumores y gente hablando muy segura por Discord.</span>
+          <small id="metaReportSeed">Informe generado ahora mismo.</small>
+        </div>
+        <div class="sheet-header-actions">
+          <button class="sheet-switch-button" id="switchToRaidComp" type="button"><span aria-hidden="true">⚔</span> RAID COMP</button>
+          <button class="raid-sheet-close" id="closeMetaLab" type="button" aria-label="Cerrar panel">×</button>
+        </div>
+      </header>
+
+      <div class="meta-toolbar">
+        <div class="meta-main-tabs" role="tablist" aria-label="Sección de meta">
+          <button class="meta-main-tab active" id="metaTierTab" type="button" role="tab" aria-controls="metaTierPanel" aria-selected="true">TIER LIST</button>
+          <button class="meta-main-tab" id="metaChartsTab" type="button" role="tab" aria-controls="metaChartsPanel" aria-selected="false">GRÁFICAS</button>
+        </div>
+        <button class="raid-generate-button meta-regenerate-button" id="regenerateMeta" type="button"><span aria-hidden="true">↻</span> REGENERAR CIENCIA</button>
+      </div>
+
+      <p class="meta-headline"><strong>ÚLTIMA HORA:</strong> <span id="metaHeadline"></span></p>
+
+      <section id="metaTierPanel" role="tabpanel" aria-labelledby="metaTierTab">
+        <div class="meta-role-tabs" role="group" aria-label="Rol de la tier list">
+          <button class="meta-role-tab active" type="button" data-meta-role="dps" aria-pressed="true">DPS</button>
+          <button class="meta-role-tab" type="button" data-meta-role="tank" aria-pressed="false">TANKS</button>
+          <button class="meta-role-tab" type="button" data-meta-role="healer" aria-pressed="false">HEALS</button>
+        </div>
+        <div class="meta-tier-list" id="metaTierList" aria-live="polite"></div>
+      </section>
+
+      <section id="metaChartsPanel" role="tabpanel" aria-labelledby="metaChartsTab" hidden>
+        <div class="meta-chart-grid">
+          <article class="meta-chart-panel">
+            <h3>DPS medio después de dos cervezas</h3>
+            <p>Medición realizada entre pull y pull, sin mirar los logs.</p>
+            <svg class="meta-chart" id="metaBarChart" role="img" aria-label="DPS aleatorio por especialización"></svg>
+          </article>
+          <article class="meta-chart-panel">
+            <h3>Daño declarado vs. mecánicas entendidas</h3>
+            <p>Correlación certificada como «más o menos».</p>
+            <svg class="meta-chart" id="metaScatterChart" role="img" aria-label="Daño declarado y mecánicas entendidas"></svg>
+          </article>
+          <article class="meta-chart-panel wide">
+            <h3>Retención del hype por semana</h3>
+            <p>Proyección científica hasta que alguien diga «el próximo parche vuelvo».</p>
+            <svg class="meta-chart" id="metaLineChart" role="img" aria-label="Hype restante por semana"></svg>
+          </article>
+        </div>
+      </section>
+
+      <p class="meta-disclaimer">Los datos de estas gráficas y tier lists han sido proporcionados por la <strong>barra de bar de No Gnomo</strong> y revisados por <strong>Fuwar</strong>.</p>
     </aside>
   </div>
 

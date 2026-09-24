@@ -57,7 +57,8 @@ button:focus-visible { outline: 3px solid white; outline-offset: 4px; }
 }
 
 .music-toggle,
-.raid-comp-toggle {
+.raid-comp-toggle,
+.meta-lab-toggle {
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -74,13 +75,20 @@ button:focus-visible { outline: 3px solid white; outline-offset: 4px; }
 }
 
 .music-toggle:hover,
-.raid-comp-toggle:hover { color: white; border-color: #555; }
+.raid-comp-toggle:hover,
+.meta-lab-toggle:hover { color: white; border-color: #555; }
 .music-toggle[aria-pressed="false"] { opacity: .58; }
 
 .raid-comp-toggle {
   color: #e5e0da;
   background: linear-gradient(#302120, #21191a);
   border-color: #5a302e;
+}
+
+.meta-lab-toggle {
+  color: #e5e0da;
+  background: linear-gradient(#23262b, #191b1f);
+  border-color: #3d4650;
 }
 
 .kicker {
@@ -324,7 +332,7 @@ h1 span { color: var(--red); }
 
 footer { padding: 25px 12px 0; color: #414245; text-align: center; font-size: .62rem; }
 
-body.raid-sheet-open { overflow: hidden; }
+body.side-sheet-open { overflow: hidden; }
 
 .raid-sheet-shell {
   position: fixed;
@@ -384,6 +392,28 @@ body.raid-sheet-open { overflow: hidden; }
 
 .raid-sheet-header h2 { margin: 0; color: #eeeae6; font-size: 1.8rem; letter-spacing: -.02em; }
 .raid-sheet-header span { display: block; margin-top: 6px; color: #8f8b86; font-size: .8rem; }
+
+.sheet-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+
+.sheet-switch-button {
+  min-height: 42px;
+  padding: 0 13px;
+  color: #c7c0b8;
+  background: #1c1d1f;
+  border: 1px solid #37393d;
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: .7rem;
+  font-weight: 900;
+  letter-spacing: .07em;
+}
+
+.sheet-switch-button:hover { color: white; border-color: #57595e; }
 
 .raid-sheet-close {
   display: grid;
@@ -458,7 +488,7 @@ body.raid-sheet-open { overflow: hidden; }
   gap: 9px;
   margin: 17px 0 12px;
   color: #8d8984;
-  font-size: .75rem;
+  font-size: .85rem;
 }
 
 .raid-sheet-status strong { color: #eeeae6; }
@@ -478,7 +508,7 @@ body.raid-sheet-open { overflow: hidden; }
   border-radius: 10px;
 }
 
-.raid-group h3 { margin: 0 0 7px; color: #aaa7a2; font-size: .67rem; letter-spacing: .16em; }
+.raid-group h3 { margin: 0 0 7px; color: #aaa7a2; font-size: .76rem; letter-spacing: .16em; }
 .raid-group-list { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
 
 .raid-member {
@@ -506,7 +536,7 @@ body.raid-sheet-open { overflow: hidden; }
   align-self: end;
   overflow: hidden;
   color: var(--class-color);
-  font-size: .72rem;
+  font-size: .88rem;
   font-weight: 900;
   line-height: 1.1;
   text-overflow: ellipsis;
@@ -518,13 +548,13 @@ body.raid-sheet-open { overflow: hidden; }
   align-self: start;
   overflow: hidden;
   color: #777a7f;
-  font-size: .56rem;
+  font-size: .68rem;
   line-height: 1.15;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.raid-member-role { color: #777a7f; font-size: .58rem; font-weight: 900; }
+.raid-member-role { color: #777a7f; font-size: .68rem; font-weight: 900; }
 
 [data-wow-class="Warrior"] { --class-color: #c69b6d; }
 [data-wow-class="Paladin"] { --class-color: #f48cba; }
@@ -542,7 +572,7 @@ body.raid-sheet-open { overflow: hidden; }
   gap: 7px 13px;
   margin-top: 16px;
   color: #7e7b77;
-  font-size: .62rem;
+  font-size: .72rem;
 }
 
 .class-legend span { display: inline-flex; align-items: center; gap: 5px; }
@@ -559,6 +589,182 @@ body.raid-sheet-open { overflow: hidden; }
 }
 
 .raid-comp-message[hidden] { display: none; }
+
+.meta-sheet { width: min(980px, 90vw); }
+
+.meta-sheet-header small {
+  display: block;
+  margin-top: 7px;
+  color: #66696e;
+  font-size: .67rem;
+}
+
+.meta-toolbar {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 20px;
+  padding: 13px;
+  background: #191a1c;
+  border: 1px solid #303236;
+  border-radius: 12px;
+}
+
+.meta-main-tabs,
+.meta-role-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: #0d0e0f;
+  border-radius: 9px;
+}
+
+.meta-main-tab,
+.meta-role-tab {
+  min-height: 42px;
+  padding: 0 17px;
+  color: #8d8984;
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: .75rem;
+  font-weight: 900;
+}
+
+.meta-main-tab:hover,
+.meta-role-tab:hover { color: #ddd9d4; }
+
+.meta-main-tab.active,
+.meta-role-tab.active {
+  color: #fff;
+  background: #33353a;
+  box-shadow: inset 0 0 0 1px #4b4e54;
+}
+
+.meta-regenerate-button { min-width: 210px; }
+
+.meta-headline {
+  margin: 15px 2px 13px;
+  color: #9f9992;
+  font-size: .76rem;
+}
+
+.meta-headline strong { color: #e34a43; }
+
+.meta-role-tabs {
+  width: fit-content;
+  margin-bottom: 12px;
+}
+
+.meta-tier-list { display: grid; gap: 8px; }
+
+.meta-tier-row {
+  display: grid;
+  grid-template-columns: 68px minmax(0, 1fr);
+  min-height: 76px;
+  overflow: hidden;
+  background: #18191b;
+  border: 1px solid #2f3135;
+  border-radius: 10px;
+}
+
+.meta-tier-letter {
+  display: grid;
+  place-items: center;
+  color: #111214;
+  font-family: Georgia, serif;
+  font-size: 1.9rem;
+  font-weight: 900;
+}
+
+.meta-tier-row.tier-s .meta-tier-letter { background: #ff6b50; }
+.meta-tier-row.tier-a .meta-tier-letter { background: #f0a957; }
+.meta-tier-row.tier-b .meta-tier-letter { background: #e5cf6a; }
+.meta-tier-row.tier-c .meta-tier-letter { background: #79b987; }
+.meta-tier-row.tier-d .meta-tier-letter { background: #72a2bb; }
+
+.meta-tier-specs {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  min-width: 0;
+  padding: 10px 12px;
+}
+
+.meta-spec {
+  display: grid;
+  grid-template-columns: 4px minmax(0, 1fr);
+  min-width: 138px;
+  padding: 7px 9px 7px 7px;
+  background: #202124;
+  border-radius: 7px;
+}
+
+.meta-spec::before {
+  grid-row: 1 / 3;
+  width: 4px;
+  height: 27px;
+  align-self: center;
+  background: var(--class-color);
+  border-radius: 3px;
+  content: "";
+}
+
+.meta-spec strong {
+  overflow: hidden;
+  color: var(--class-color);
+  font-size: .8rem;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta-spec span { color: #73767b; font-size: .64rem; }
+
+.meta-chart-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.meta-chart-panel {
+  min-width: 0;
+  padding: 13px 13px 8px;
+  background: #18191b;
+  border: 1px solid #303236;
+  border-radius: 10px;
+}
+
+.meta-chart-panel.wide { grid-column: 1 / -1; }
+.meta-chart-panel h3 { margin: 0; color: #ddd9d5; font-size: .84rem; }
+.meta-chart-panel p { margin: 4px 0 8px; color: #777a7f; font-size: .67rem; }
+
+.meta-chart {
+  display: block;
+  width: 100%;
+  min-height: 225px;
+  overflow: visible;
+}
+
+.meta-chart text { font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+.meta-chart .grid { stroke: #2e3034; stroke-width: 1; }
+.meta-chart .tick-label { fill: #888b90; font-size: 11px; }
+.meta-chart .axis-title { fill: #9b9da2; font-size: 11px; }
+
+.meta-disclaimer {
+  margin: 15px 0 0;
+  padding-top: 12px;
+  color: #66696e;
+  border-top: 1px solid #2d2f33;
+  font-size: .7rem;
+  text-align: center;
+}
+
+.meta-disclaimer strong { color: #918b84; }
 
 .confetti-layer { position: fixed; inset: 0; z-index: 50; overflow: hidden; pointer-events: none; }
 .confetti { position: absolute; top: -20px; width: 9px; height: 14px; animation: confetti-fall var(--duration) linear forwards; }
@@ -586,7 +792,7 @@ noscript { display: block; padding: 14px; background: #8f1713; text-align: cente
 @media (max-width: 760px) {
   .page-shell { width: min(100% - 20px, 1080px); }
   .top-tools { position: static; justify-content: center; margin: 0 auto 8px; }
-  .music-toggle, .raid-comp-toggle { min-height: 42px; }
+  .music-toggle, .raid-comp-toggle, .meta-lab-toggle { min-height: 42px; }
   .brand-logo { width: 78px; height: 78px; }
   .kicker { letter-spacing: .22em; }
   h1 { font-size: clamp(2.4rem, 12vw, 4rem); }
@@ -610,14 +816,27 @@ noscript { display: block; padding: 14px; background: #8f1713; text-align: cente
   .hall-entry span { display: none; }
   .raid-sheet { width: 100%; padding: 18px 14px 26px; }
   .raid-sheet-header h2 { font-size: 1.45rem; }
+  .raid-sheet-header { align-items: flex-start; }
+  .sheet-header-actions { flex-direction: column-reverse; align-items: stretch; }
+  .sheet-switch-button { min-height: 36px; padding-inline: 9px; }
   .raid-sheet-controls { flex-direction: column; }
   .raid-size-picker { grid-template-columns: repeat(3, 1fr); min-height: 50px; }
   .raid-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .meta-sheet { width: 100%; }
+  .meta-toolbar { flex-direction: column; }
+  .meta-main-tabs { display: grid; grid-template-columns: repeat(2, 1fr); }
+  .meta-regenerate-button { min-width: 0; }
+  .meta-chart-grid { grid-template-columns: 1fr; }
+  .meta-chart-panel.wide { grid-column: auto; }
 }
 
 @media (max-width: 430px) {
   .top-tools { flex-wrap: wrap; }
   .raid-groups { grid-template-columns: 1fr; }
+  .meta-tier-row { grid-template-columns: 52px minmax(0, 1fr); }
+  .meta-role-tabs { display: grid; grid-template-columns: repeat(3, 1fr); width: 100%; }
+  .meta-main-tab, .meta-role-tab { padding-inline: 9px; }
+  .meta-spec { min-width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

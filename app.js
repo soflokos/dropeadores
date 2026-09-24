@@ -36,6 +36,60 @@ const classBySpec = {
 const tankSpecs = new Set(["Guardian", "Protection", "Protection1"]);
 const healerSpecs = new Set(["Discipline", "Holy1", "Restoration", "Restoration1"]);
 
+const wowClassColors = {
+  Warrior: "#c69b6d",
+  Paladin: "#f48cba",
+  Hunter: "#aad372",
+  Rogue: "#fff468",
+  Priest: "#ffffff",
+  Shaman: "#0070dd",
+  Mage: "#3fc7eb",
+  Warlock: "#8788ee",
+  Druid: "#ff7c0a"
+};
+
+const metaSpecs = [
+  { name: "Arms", className: "Warrior", role: "dps" },
+  { name: "Fury", className: "Warrior", role: "dps" },
+  { name: "Retribution", className: "Paladin", role: "dps" },
+  { name: "Beast Mastery", className: "Hunter", role: "dps" },
+  { name: "Marksmanship", className: "Hunter", role: "dps" },
+  { name: "Survival", className: "Hunter", role: "dps" },
+  { name: "Combat", className: "Rogue", role: "dps" },
+  { name: "Assassination", className: "Rogue", role: "dps" },
+  { name: "Shadow", className: "Priest", role: "dps" },
+  { name: "Elemental", className: "Shaman", role: "dps" },
+  { name: "Enhancement", className: "Shaman", role: "dps" },
+  { name: "Fire", className: "Mage", role: "dps" },
+  { name: "Frost", className: "Mage", role: "dps" },
+  { name: "Arcane", className: "Mage", role: "dps" },
+  { name: "Affliction", className: "Warlock", role: "dps" },
+  { name: "Demonology", className: "Warlock", role: "dps" },
+  { name: "Destruction", className: "Warlock", role: "dps" },
+  { name: "Balance", className: "Druid", role: "dps" },
+  { name: "Feral", className: "Druid", role: "dps" },
+  { name: "Protection", className: "Warrior", role: "tank" },
+  { name: "Protection", className: "Paladin", role: "tank" },
+  { name: "Guardian", className: "Druid", role: "tank" },
+  { name: "🛡️ Fuwar", className: "Warrior", role: "tank", special: true },
+  { name: "Holy", className: "Paladin", role: "healer" },
+  { name: "Discipline", className: "Priest", role: "healer" },
+  { name: "Holy", className: "Priest", role: "healer" },
+  { name: "Restoration", className: "Shaman", role: "healer" },
+  { name: "Restoration", className: "Druid", role: "healer" }
+];
+
+const metaTierNames = ["S", "A", "B", "C", "D"];
+const metaHeadlines = [
+  "Fire sube a S porque alguien enseñó un crítico sin contexto.",
+  "Fuwar confirma que la clase más rota es la que está jugando.",
+  "Tres wipes bastan para declarar una especialización injugable.",
+  "El 87% de los datos procede de alguien diciendo «créeme».",
+  "Protection cae dos tiers tras una discusión en #general.",
+  "La build secreta deja de funcionar en cuanto se publica.",
+  "Fuwar ha bloqueado otro nerf levantando el escudo."
+];
+
 const reasons = [
   "lleva 4 días diciendo «mañana entro».",
   "ha decidido tocar césped.",
@@ -68,6 +122,7 @@ const ui = {
   survivorsList: document.querySelector("#survivorsList"),
   openRaidComp: document.querySelector("#openRaidComp"),
   closeRaidComp: document.querySelector("#closeRaidComp"),
+  switchToRaidComp: document.querySelector("#switchToRaidComp"),
   raidCompSheet: document.querySelector("#raidCompSheet"),
   raidSheetBackdrop: document.querySelector("#raidSheetBackdrop"),
   raidSizeButtons: [...document.querySelectorAll("[data-raid-size]")],
@@ -77,6 +132,23 @@ const ui = {
   raidGroupSummary: document.querySelector("#raidGroupSummary"),
   raidGroups: document.querySelector("#raidGroups"),
   raidCompMessage: document.querySelector("#raidCompMessage"),
+  openMetaLab: document.querySelector("#openMetaLab"),
+  closeMetaLab: document.querySelector("#closeMetaLab"),
+  switchToMetaLab: document.querySelector("#switchToMetaLab"),
+  metaLabSheet: document.querySelector("#metaLabSheet"),
+  metaSheetBackdrop: document.querySelector("#metaSheetBackdrop"),
+  regenerateMeta: document.querySelector("#regenerateMeta"),
+  metaTierTab: document.querySelector("#metaTierTab"),
+  metaChartsTab: document.querySelector("#metaChartsTab"),
+  metaTierPanel: document.querySelector("#metaTierPanel"),
+  metaChartsPanel: document.querySelector("#metaChartsPanel"),
+  metaRoleTabs: [...document.querySelectorAll("[data-meta-role]")],
+  metaTierList: document.querySelector("#metaTierList"),
+  metaHeadline: document.querySelector("#metaHeadline"),
+  metaReportSeed: document.querySelector("#metaReportSeed"),
+  metaBarChart: document.querySelector("#metaBarChart"),
+  metaScatterChart: document.querySelector("#metaScatterChart"),
+  metaLineChart: document.querySelector("#metaLineChart"),
   musicToggle: document.querySelector("#musicToggle"),
   musicLabel: document.querySelector("#musicLabel"),
   resetDialog: document.querySelector("#resetDialog"),
@@ -91,6 +163,11 @@ let spinning = false;
 let soundEnabled = localStorage.getItem(SOUND_KEY) !== "off";
 let audioContext = null;
 let raidSize = 40;
+let activeSheet = null;
+let activeMetaRole = "dps";
+let metaTierData = {};
+let metaChartData = {};
+const sheetCloseTimers = new Map();
 
 init();
 
@@ -128,11 +205,23 @@ function bindEvents() {
   ui.openRaidComp.addEventListener("click", openRaidComp);
   ui.closeRaidComp.addEventListener("click", closeRaidComp);
   ui.raidSheetBackdrop.addEventListener("click", closeRaidComp);
+  ui.switchToMetaLab.addEventListener("click", openMetaLab);
+  ui.openMetaLab.addEventListener("click", openMetaLab);
+  ui.closeMetaLab.addEventListener("click", closeMetaLab);
+  ui.metaSheetBackdrop.addEventListener("click", closeMetaLab);
+  ui.switchToRaidComp.addEventListener("click", openRaidComp);
+  ui.regenerateMeta.addEventListener("click", generateMetaLab);
+  ui.metaTierTab.addEventListener("click", () => selectMetaPanel("tier"));
+  ui.metaChartsTab.addEventListener("click", () => selectMetaPanel("charts"));
+  ui.metaRoleTabs.forEach(button => button.addEventListener("click", () => selectMetaRole(button.dataset.metaRole)));
   ui.generateRaidButton.addEventListener("click", generateRaidComp);
   ui.raidSizeButtons.forEach(button => button.addEventListener("click", () => selectRaidSize(Number(button.dataset.raidSize))));
   document.addEventListener("keydown", event => {
-    if (event.key === "Escape" && !ui.raidCompSheet.hidden) closeRaidComp();
+    if (event.key !== "Escape" || !activeSheet) return;
+    if (activeSheet === ui.raidCompSheet) closeRaidComp();
+    if (activeSheet === ui.metaLabSheet) closeMetaLab();
   });
+  window.addEventListener("resize", redrawMetaCharts);
 }
 
 function loadHistory() {
@@ -303,20 +392,269 @@ function render() {
 }
 
 function openRaidComp() {
-  ui.raidCompSheet.hidden = false;
-  document.body.classList.add("raid-sheet-open");
-  window.requestAnimationFrame(() => ui.raidCompSheet.classList.add("open"));
+  openSideSheet(ui.raidCompSheet, ui.closeRaidComp);
   generateRaidComp();
-  ui.closeRaidComp.focus();
 }
 
 function closeRaidComp() {
-  ui.raidCompSheet.classList.remove("open");
-  document.body.classList.remove("raid-sheet-open");
-  window.setTimeout(() => {
-    ui.raidCompSheet.hidden = true;
-    ui.openRaidComp.focus();
-  }, 240);
+  closeSideSheet(ui.raidCompSheet, ui.openRaidComp);
+}
+
+function openMetaLab() {
+  openSideSheet(ui.metaLabSheet, ui.closeMetaLab);
+  generateMetaLab();
+}
+
+function closeMetaLab() {
+  closeSideSheet(ui.metaLabSheet, ui.openMetaLab);
+}
+
+function openSideSheet(sheet, closeButton) {
+  if (activeSheet && activeSheet !== sheet) closeSideSheet(activeSheet, null, true);
+
+  window.clearTimeout(sheetCloseTimers.get(sheet));
+  sheet.hidden = false;
+  activeSheet = sheet;
+  document.body.classList.add("side-sheet-open");
+  window.requestAnimationFrame(() => {
+    sheet.classList.add("open");
+    closeButton.focus();
+  });
+}
+
+function closeSideSheet(sheet, opener, immediate = false) {
+  window.clearTimeout(sheetCloseTimers.get(sheet));
+  sheet.classList.remove("open");
+
+  if (activeSheet === sheet) {
+    activeSheet = null;
+    document.body.classList.remove("side-sheet-open");
+  }
+
+  const finish = () => {
+    sheet.hidden = true;
+    if (opener && activeSheet === null) opener.focus();
+  };
+
+  if (immediate) {
+    finish();
+  } else {
+    sheetCloseTimers.set(sheet, window.setTimeout(finish, 240));
+  }
+}
+
+function selectMetaPanel(panel) {
+  const showCharts = panel === "charts";
+  ui.metaTierTab.classList.toggle("active", !showCharts);
+  ui.metaChartsTab.classList.toggle("active", showCharts);
+  ui.metaTierTab.setAttribute("aria-selected", String(!showCharts));
+  ui.metaChartsTab.setAttribute("aria-selected", String(showCharts));
+  ui.metaTierPanel.hidden = showCharts;
+  ui.metaChartsPanel.hidden = !showCharts;
+  if (showCharts) window.requestAnimationFrame(drawMetaCharts);
+}
+
+function selectMetaRole(role) {
+  if (!metaTierData[role]) return;
+  activeMetaRole = role;
+  ui.metaRoleTabs.forEach(button => {
+    const selected = button.dataset.metaRole === role;
+    button.classList.toggle("active", selected);
+    button.setAttribute("aria-pressed", String(selected));
+  });
+  renderMetaTierList();
+}
+
+function generateMetaLab() {
+  ["dps", "tank", "healer"].forEach(role => {
+    const pool = shuffled(metaSpecs.filter(spec => spec.role === role));
+    metaTierData[role] = Object.fromEntries(metaTierNames.map(tier => [tier, []]));
+    pool.forEach((spec, index) => {
+      const position = index / pool.length;
+      const tier = position < .14 ? "S" : position < .37 ? "A" : position < .64 ? "B" : position < .86 ? "C" : "D";
+      metaTierData[role][tier].push(spec);
+    });
+  });
+
+  const dpsPool = shuffled(metaSpecs.filter(spec => spec.role === "dps"));
+  const fuwar = metaSpecs.find(spec => spec.special);
+  metaChartData.bars = shuffled([
+    { ...fuwar, value: randomWhole(650, 1250) },
+    ...dpsPool.slice(0, 5).map(spec => ({ ...spec, value: randomWhole(420, 1180) }))
+  ]).sort((left, right) => right.value - left.value);
+  metaChartData.scatter = [
+    { ...fuwar, x: randomWhole(15, 95), y: randomWhole(650, 1180) },
+    ...dpsPool.slice(5, 10).map(spec => ({ ...spec, x: randomWhole(8, 96), y: randomWhole(430, 1180) }))
+  ];
+  metaChartData.lines = [fuwar, ...dpsPool.slice(10, 12)].map(spec => {
+    let value = randomWhole(86, 100);
+    return {
+      ...spec,
+      values: Array.from({ length: 8 }, () => {
+        value = Math.max(8, value - randomWhole(2, 17) + randomWhole(-4, 5));
+        return Math.round(value);
+      })
+    };
+  });
+
+  ui.metaHeadline.textContent = metaHeadlines[randomIndex(metaHeadlines.length)];
+  ui.metaReportSeed.textContent = `Informe #${randomWhole(1000, 9999)} · parche 0.bar.${randomWhole(1, 9)} · generado al entrar`;
+  renderMetaTierList();
+  drawMetaCharts();
+}
+
+function randomWhole(minimum, maximum) {
+  return Math.floor(minimum + Math.random() * (maximum - minimum + 1));
+}
+
+function renderMetaTierList() {
+  ui.metaTierList.replaceChildren();
+  metaTierNames.forEach(tier => {
+    const row = document.createElement("section");
+    row.className = `meta-tier-row tier-${tier.toLowerCase()}`;
+
+    const letter = document.createElement("div");
+    letter.className = "meta-tier-letter";
+    letter.textContent = tier;
+
+    const specs = document.createElement("div");
+    specs.className = "meta-tier-specs";
+    metaTierData[activeMetaRole][tier].forEach(spec => {
+      const chip = document.createElement("div");
+      chip.className = "meta-spec";
+      chip.dataset.wowClass = spec.className;
+
+      const name = document.createElement("strong");
+      name.textContent = spec.name;
+      const wowClass = document.createElement("span");
+      wowClass.textContent = spec.special ? "Warrior · Escudo" : spec.className;
+      chip.append(name, wowClass);
+      specs.append(chip);
+    });
+
+    row.append(letter, specs);
+    ui.metaTierList.append(row);
+  });
+}
+
+function createSvgElement(name, attributes = {}, text = "") {
+  const element = document.createElementNS("http://www.w3.org/2000/svg", name);
+  Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
+  if (text) element.textContent = text;
+  return element;
+}
+
+function addSvgTitle(element, text) {
+  element.append(createSvgElement("title", {}, text));
+  return element;
+}
+
+function prepareMetaChart(svg, height) {
+  const width = Math.max(300, Math.floor(svg.getBoundingClientRect().width || 440));
+  svg.replaceChildren();
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+  return { width, height };
+}
+
+function drawMetaBarChart() {
+  const svg = ui.metaBarChart;
+  const { width, height } = prepareMetaChart(svg, 235);
+  const margin = { top: 12, right: 42, bottom: 34, left: 110 };
+  const plotWidth = width - margin.left - margin.right;
+  const plotHeight = height - margin.top - margin.bottom;
+
+  [0, .25, .5, .75, 1].forEach(tick => {
+    const x = margin.left + plotWidth * tick;
+    svg.append(createSvgElement("line", { x1: x, y1: margin.top, x2: x, y2: margin.top + plotHeight, class: "grid" }));
+    svg.append(createSvgElement("text", { x, y: height - 18, "text-anchor": "middle", class: "tick-label" }, Math.round(1300 * tick)));
+  });
+
+  const rowHeight = plotHeight / metaChartData.bars.length;
+  metaChartData.bars.forEach((item, index) => {
+    const y = margin.top + index * rowHeight + 5;
+    const barWidth = plotWidth * (item.value / 1300);
+    const label = item.special ? "🛡️ Fuwar" : item.name;
+    svg.append(createSvgElement("text", { x: margin.left - 8, y: y + rowHeight * .45, "text-anchor": "end", class: "tick-label", fill: wowClassColors[item.className] }, label));
+    const bar = createSvgElement("rect", { x: margin.left, y, width: barWidth, height: Math.max(12, rowHeight - 10), rx: 3, fill: wowClassColors[item.className] });
+    svg.append(addSvgTitle(bar, `${label}: ${item.value} DPS inventado`));
+    svg.append(createSvgElement("text", { x: margin.left + barWidth + 6, y: y + rowHeight * .45, class: "tick-label" }, item.value));
+  });
+  svg.append(createSvgElement("text", { x: margin.left + plotWidth / 2, y: height - 2, "text-anchor": "middle", class: "axis-title" }, "DPS totalmente verificado"));
+}
+
+function drawMetaScatterChart() {
+  const svg = ui.metaScatterChart;
+  const { width, height } = prepareMetaChart(svg, 235);
+  const margin = { top: 15, right: 26, bottom: 34, left: 55 };
+  const plotWidth = width - margin.left - margin.right;
+  const plotHeight = height - margin.top - margin.bottom;
+
+  [0, .25, .5, .75, 1].forEach(tick => {
+    const x = margin.left + plotWidth * tick;
+    const y = margin.top + plotHeight * (1 - tick);
+    svg.append(createSvgElement("line", { x1: x, y1: margin.top, x2: x, y2: margin.top + plotHeight, class: "grid" }));
+    svg.append(createSvgElement("line", { x1: margin.left, y1: y, x2: margin.left + plotWidth, y2: y, class: "grid" }));
+    svg.append(createSvgElement("text", { x, y: height - 18, "text-anchor": "middle", class: "tick-label" }, Math.round(100 * tick)));
+    svg.append(createSvgElement("text", { x: margin.left - 7, y: y + 4, "text-anchor": "end", class: "tick-label" }, Math.round(400 + 800 * tick)));
+  });
+
+  metaChartData.scatter.forEach(item => {
+    const x = margin.left + plotWidth * (item.x / 100);
+    const y = margin.top + plotHeight * (1 - (item.y - 400) / 800);
+    const label = item.special ? "🛡️ Fuwar" : item.name;
+    const point = createSvgElement("circle", { cx: x, cy: y, r: item.special ? 8 : 7, fill: wowClassColors[item.className], stroke: "#111214", "stroke-width": 2 });
+    svg.append(addSvgTitle(point, `${label}: entiende ${item.x}% · declara ${item.y} DPS`));
+    svg.append(createSvgElement("text", { x: x + 9, y: y - 8, class: "tick-label", fill: wowClassColors[item.className] }, label));
+  });
+  svg.append(createSvgElement("text", { x: margin.left + plotWidth / 2, y: height - 2, "text-anchor": "middle", class: "axis-title" }, "Mecánicas entendidas (%)"));
+  svg.append(createSvgElement("text", { x: 13, y: margin.top + plotHeight / 2, "text-anchor": "middle", class: "axis-title", transform: `rotate(-90 13 ${margin.top + plotHeight / 2})` }, "DPS declarado"));
+}
+
+function drawMetaLineChart() {
+  const svg = ui.metaLineChart;
+  const { width, height } = prepareMetaChart(svg, 245);
+  const margin = { top: 15, right: width < 500 ? 72 : 115, bottom: 36, left: 48 };
+  const plotWidth = width - margin.left - margin.right;
+  const plotHeight = height - margin.top - margin.bottom;
+
+  [0, .25, .5, .75, 1].forEach(tick => {
+    const y = margin.top + plotHeight * (1 - tick);
+    svg.append(createSvgElement("line", { x1: margin.left, y1: y, x2: margin.left + plotWidth, y2: y, class: "grid" }));
+    svg.append(createSvgElement("text", { x: margin.left - 7, y: y + 4, "text-anchor": "end", class: "tick-label" }, Math.round(100 * tick)));
+  });
+  for (let week = 1; week <= 8; week += 1) {
+    const x = margin.left + plotWidth * ((week - 1) / 7);
+    svg.append(createSvgElement("text", { x, y: height - 19, "text-anchor": "middle", class: "tick-label" }, week));
+  }
+
+  metaChartData.lines.forEach(item => {
+    const points = item.values.map((value, index) => ({
+      value,
+      x: margin.left + plotWidth * (index / 7),
+      y: margin.top + plotHeight * (1 - value / 100)
+    }));
+    const label = item.special ? "🛡️ Fuwar" : item.name;
+    svg.append(createSvgElement("polyline", { points: points.map(point => `${point.x},${point.y}`).join(" "), fill: "none", stroke: wowClassColors[item.className], "stroke-width": 3, "stroke-linejoin": "round", "stroke-linecap": "round" }));
+    points.forEach(point => {
+      const marker = createSvgElement("circle", { cx: point.x, cy: point.y, r: item.special ? 5 : 4, fill: wowClassColors[item.className] });
+      svg.append(addSvgTitle(marker, `${label}: ${point.value}% de hype`));
+    });
+    const last = points[points.length - 1];
+    svg.append(createSvgElement("text", { x: last.x + 8, y: last.y + 4, class: "tick-label", fill: wowClassColors[item.className] }, label));
+  });
+  svg.append(createSvgElement("text", { x: margin.left + plotWidth / 2, y: height - 2, "text-anchor": "middle", class: "axis-title" }, "Semana desde el lanzamiento"));
+  svg.append(createSvgElement("text", { x: 13, y: margin.top + plotHeight / 2, "text-anchor": "middle", class: "axis-title", transform: `rotate(-90 13 ${margin.top + plotHeight / 2})` }, "Hype restante (%)"));
+}
+
+function drawMetaCharts() {
+  if (!metaChartData.bars) return;
+  drawMetaBarChart();
+  drawMetaScatterChart();
+  drawMetaLineChart();
+}
+
+function redrawMetaCharts() {
+  if (activeSheet === ui.metaLabSheet && !ui.metaChartsPanel.hidden) drawMetaCharts();
 }
 
 function selectRaidSize(size) {
